@@ -29,3 +29,8 @@ virtctl console testvm
 
 # 3.6 Stop the VM
 virtctl stop testvm
+
+# 3.7 Migrate the VM to other node
+virtctl migrate testvm
+
+# See: https://kubevirt.io/labs/kubernetes/migration.html for full live migration test.
