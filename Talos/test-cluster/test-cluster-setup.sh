@@ -1,6 +1,6 @@
 # instal kubectl
 
-sudo snap install kubect
+sudo snap install kubectl --classic
 
 kubectl version --client
 
@@ -23,6 +23,7 @@ talosctl --talosconfig talosconfig config node 192.168.1.66
 
 export TALOSCONFIG=~/talosconfig
 
+# Change config to contain the contens of extra-machineconfig.yaml. see: https://longhorn.io/docs/1.7.2/advanced-resources/os-distro-specific/talos-linux-support/
 
 # APPly config to control plane
 talosctl apply-config --insecure --nodes 192.168.1.66 --file controlplane.yaml

@@ -1,3 +1,5 @@
+# See https://longhorn.io/docs/1.7.2/nodes-and-volumes/volumes/create-volumes/
+
 kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v1.7.2/examples/storageclass.yaml
 
 kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v1.7.2/examples/pod_with_pvc.yaml
