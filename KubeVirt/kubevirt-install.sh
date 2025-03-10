@@ -27,3 +27,9 @@ curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/${VERS
 chmod +x virtctl
 sudo install virtctl /usr/local/bin
 
+
+
+### Deleting kubevirt
+kubectl delete -f "https://github.com/kubevirt/kubevirt/releases/download/${VERSION}/kubevirt-cr.yaml"
+kubectl delete -f "https://github.com/kubevirt/kubevirt/releases/download/${VERSION}/kubevirt-operator.yaml"
+
