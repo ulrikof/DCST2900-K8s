@@ -1,4 +1,4 @@
-# https://linuxconfig.org/network-booting-with-linux-px 
+# https://linuxconfig.org/network-booting-with-linux-pxe
 # https://factory.talos.dev/?arch=amd64&cmdline-set=true&extensions=-&extensions=siderolabs%2Fiscsi-tools&extensions=siderolabs%2Futil-linux-tools&platform=metal&target=metal&version=1.9.4
 
 sudo journalctl -u isc-dhcp-server --since "5 minutes ago"
