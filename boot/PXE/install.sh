@@ -1,6 +1,6 @@
 ### On each server
 
-# 1. Select PXE Boot on the machine
+# 1. Select PXE Boot on the machine (either config the iDRAC or just hit F12 in the console when it the machine starts)
 
 # 2. Wait for PXE, then wait for menu to pop up. (you may have to specify interface and confirm ip config)
 
