@@ -3,7 +3,7 @@
 
 sudo journalctl -u isc-dhcp-server --since "5 minutes ago"
 
-sudo journalctl -u tftpd-hpa --since "5 minutes ago"
+sudo journalctl -u tftpd-hpa --since "5 minutes ago" 
  
 atftp --trace -g -l metal-amd64 -r metal-amd64 10.100.38.20
 
