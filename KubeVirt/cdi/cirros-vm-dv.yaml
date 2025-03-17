@@ -1,0 +1,22 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachineInstance
+metadata:
+  name: cirros-vm-dv
+spec:
+  domain:
+    devices:
+      disks:
+        - disk:
+            bus: virtio
+          name: dvdisk
+    machine:
+      type: ""
+    resources:
+      requests:
+        memory: 64M
+  terminationGracePeriodSeconds: 0
+  volumes:
+    - name: dvdisk
+      dataVolume:
+        name: cirros-vm-disk-dv
+status: {}

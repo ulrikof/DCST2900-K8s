@@ -1,0 +1,27 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: cirros-vm-dv-url
+spec:
+  runStrategy: Manual # You can set to true if you want it to auto-start
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: cirros-vm-dv-url
+    spec:
+      domain:
+        devices:
+          disks:
+            - disk:
+                bus: virtio
+              name: dvdisk
+        machine:
+          type: ""
+        resources:
+          requests:
+            memory: 64M
+      terminationGracePeriodSeconds: 0
+      volumes:
+        - name: dvdisk
+          dataVolume:
+            name: cirros-vm-disk-dv-url
