@@ -27,10 +27,10 @@ kubectl get svc testvm-http -o jsonpath='{.spec.ports[0].nodePort}'
 
 # Curl the vm (ip just needs to be one active node, does not matter which):
 
-curl 192.168.0.50:31644
+curl 10.100.38.101:31205
 
 # Loop the curl the see if it is interupted by the migrate
-while true; do curl 192.168.0.50:31644; sleep 0.5;  done;
+while true; do curl 10.100.38.101:31205; sleep 0.5;  done;
 
 # Initiate the migrate
 virtctl migrate live-migration-test
