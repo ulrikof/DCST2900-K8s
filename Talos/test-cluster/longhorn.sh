@@ -54,4 +54,5 @@ kubectl get nodes -o wide
 
 # In this instance of the setup it can be reached at:
 
-http://192.168.1.94:30295/#/dashboard
+http://192.168.0.50:31715/#/dashboard
+
