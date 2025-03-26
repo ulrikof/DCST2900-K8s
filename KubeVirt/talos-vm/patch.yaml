@@ -1,6 +1,0 @@
-machine:
-  certSANs:
-    - 10.244.8.74
-  network:
-    interfaces:
-      - interface: enp1s0
