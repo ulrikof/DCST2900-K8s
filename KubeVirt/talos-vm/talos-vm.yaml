@@ -25,17 +25,24 @@ spec:
       labels:
         kubevirt.io/domain: vm-talos-1
     spec:
+      hostname: "talos-control-plane-1"
       domain:
         cpu:
           cores: 2
         resources:
           requests:
-            memory: 512Mi
+            memory: 1Gi
         devices:
           disks:
             - name: disk0
               disk:
                 bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+      networks:
+        - name: default
+          pod: {}
       volumes:
         - name: disk0
           dataVolume:
