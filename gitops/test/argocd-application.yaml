@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default  # Change if using a custom ArgoCD project
   source:
-    repoURL: https://github.com/Hauglarian/argocd-example-apps.git
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git # SSH URL to the Git repo
     targetRevision: HEAD  # You can use a specific branch, tag, or commit SHA
-    path: guestbook  # Path inside the Git repo where the k8s manifests are stored
+    path: ArgoCD/guestbook  # Path inside the Git repo where the k8s manifests are stored
   destination:
     server: https://kubernetes.default.svc  # This points to the in-cluster Kubernetes API
     namespace: argocd  # Change this to the desired namespace
