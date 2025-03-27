@@ -9,6 +9,8 @@ spec:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git # SSH URL to the Git repo
     targetRevision: HEAD  # You can use a specific branch, tag, or commit SHA
     path: ArgoCD/guestbook  # Path inside the Git repo where the k8s manifests are stored
+    directory:
+      recurse: true  # Recurse into subdirectories
   destination:
     server: https://kubernetes.default.svc  # This points to the in-cluster Kubernetes API
     namespace: argocd  # Change this to the desired namespace
@@ -16,3 +18,5 @@ spec:
     automated:  # Enable auto-sync for GitOps-style deployment
       prune: true  # Deletes resources not in Git
       selfHeal: true  # Fixes drift if someone changes resources manually in the cluster
+    syncPolicy:
+      - CreateNamespace=true
