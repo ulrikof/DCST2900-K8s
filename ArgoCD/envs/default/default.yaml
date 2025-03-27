@@ -18,5 +18,5 @@ spec:
     automated:  # Enable auto-sync for GitOps-style deployment
       prune: true  # Deletes resources not in Git
       selfHeal: true  # Fixes drift if someone changes resources manually in the cluster
-    syncOption:
+    syncOptions:
       - CreateNamespace=true
