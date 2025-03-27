@@ -1,0 +1,50 @@
+apiVersion: pool.kubevirt.io/v1alpha1
+kind: VirtualMachinePool
+metadata:
+  name: talos-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      kubevirt.io/vmpool: talos-worker
+  virtualMachineTemplate:
+    metadata:
+      labels:
+        kubevirt.io/vmpool: talos-worker
+        kubevirt.io/os: talos
+    spec:
+      runStrategy: Always
+      dataVolumeTemplates:
+        - metadata:
+            name: talos-worker-disk
+          spec:
+            storage:
+              accessModes:
+                - ReadWriteOnce
+              volumeMode: Filesystem
+              resources:
+                requests:
+                  storage: 10Gi
+            source:
+              http:
+                url: https://factory.talos.dev/image/2727349a57ea20d89dea4b7df295dc43b03cea5c2edf765939d0b0e61aade779/v1.9.5/metal-amd64.qcow2
+      template:
+        metadata:
+          labels:
+            kubevirt.io/vmpool: talos-worker
+        spec:
+          domain:
+            cpu:
+              cores: 2
+            resources:
+              requests:
+                memory: 2Gi
+            devices:
+              disks:
+                - name: disk0
+                  disk:
+                    bus: virtio
+          volumes:
+            - name: disk0
+              dataVolume:
+                name: talos-worker-disk
