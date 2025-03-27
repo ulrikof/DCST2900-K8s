@@ -87,3 +87,18 @@ argocd app set guestbook --auto-prune --self-heal
 ### Delete the application
 #argocd app delete <APP_NAME>
 argocd app delete guestbook
+
+
+# Deploy an application using the YAML file
+
+## Add SSH key to ArgoCD
+####(and to the Git repository as a deploy key)
+#argocd repo add <REPO_SSH_URL> --ssh-private-key-path ~/.ssh/<NAME_OF_KEY>
+argocd repo add git@github.com:ulrikof/DCST2900-K8s.git --ssh-private-key-path ~/.ssh/id_argocd
+
+### Check if the repo is added
+argocd repo list
+
+## Create an application from a YAML file
+#kubectl apply -f <YAML_FILE>
+kubectl apply -f ArgoCD/guestbook.yaml
