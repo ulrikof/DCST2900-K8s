@@ -12,7 +12,7 @@ spec:
     helm:
       values: | # Can also use valueFiles like - valueFiles: - values.yaml
         replica:
-          replicaCount: 2
+          replicaCount: 1
   destination:
     server: https://kubernetes.default.svc  # This points to the in-cluster Kubernetes API
     namespace: redis  # Change this to the desired namespace
