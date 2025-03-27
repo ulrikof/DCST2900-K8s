@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: default
+  namespace: argocd  # Ensure this matches your Argo CD installation namespace
+spec:
+  project: default  # Change if using a custom ArgoCD project
+  source:
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git # SSH URL to the Git repo
+    targetRevision: HEAD  # You can use a specific branch, tag, or commit SHA
+    path: ArgoCD/envs/default  # Path inside the Git repo where the k8s manifests are stored
+    directory:
+      recurse: true  # Recurse into subdirectories
+  destination:
+    server: https://kubernetes.default.svc  # This points to the in-cluster Kubernetes API
+    namespace: argocd  # Change this to the desired namespace
+  syncPolicy:
+    automated:  # Enable auto-sync for GitOps-style deployment
+      prune: true  # Deletes resources not in Git
+      selfHeal: true  # Fixes drift if someone changes resources manually in the cluster
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,55 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: vm-fedora-40
+  labels:
+    kubevirt.io/os: linux
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: dv-fedora-40
+      spec:
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: 5Gi
+        source:
+          http:
+            url: "https://download.fedoraproject.org/pub/fedora/linux/releases/40/Cloud/x86_64/images/Fedora-Cloud-Base-AmazonEC2.x86_64-40-1.14.raw.xz"
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: vm-fedora-40
+    spec:
+      domain:
+        cpu:
+          cores: 2
+        resources:
+          requests:
+            memory: 1024M
+        devices:
+          disks:
+            - name: disk0
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              cdrom:
+                bus: sata
+                readonly: true
+      volumes:
+        - name: disk0
+          dataVolume:
+            name: dv-fedora-40
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              hostname: vm-fedora-40
+              ssh_pwauth: true
+              disable_root: false
+              ssh_authorized_keys:
+                - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDbFsQDdi5EAVP9zFxddXQixQlX1DlxxlNpSUqx6t0Nx73JqpV7/bA/VHS94BPyZn5xro66eYRk7PNpMBfxsNihNbt7bREJqVmMrJ8Md88cIKL/F5ytdR86r9BogoHVDQvXOrfkLD1r2WNWARBmcdO8XcHrKELlIBWRI49HriXFwrru+JSeGzxfX50NKIr2PYkdIwnn26nLhAwnIcu5xQaC6TwvXopBMjKMgu2ga3223hgNaXIvsaLRQVGLw5jo0UTkoI2nnY+Uce0iyBntDrASCcVAcC+onFllGDgzQy8qvaeiKfmtnKfg2XgJq6urP0h2T8tmK45Mm4rQ9/LpEPfHER0Km8OayXhSh55bdrnJyc58TNrW24GEUckpWg+yZXAX4laKwmly9FdO5cxgMdB+PlJ3WZQDO7mbNTa+r6PTdbn9vEUJlLfxly/6EcMVXW4QMudR1OL+6RCz3U8ZwyIfHFL7Qph1NH9zDQ+I7qrSdsI2owa3yBPRGaBfM5R5+qpvvV0htLVQXhimXzcfR86so+CphiW1hYosekVdLu7IouTJdua01GGdx0L+hyig7z8JMFLUM2h92ijcHNWATNGlRMSkv3eI3TBcUyiA0wguQrLoot8qw7HpWzF5L1VF4abxIenJEwn2MzFlWW8Y6/6/wJ46mk27ngY3Zj1wJ+RWkQ== dcst2900-user@dcst2900-ubuntu
