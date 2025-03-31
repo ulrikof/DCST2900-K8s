@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: talos
+  namespace: argocd
+spec:
+  sourceRepos:
+    - https://github.com/your-org/your-repo.git
+  destinations:
+    - namespace: kubevirt
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: "kubevirt.io"
+      kind: "*"
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
