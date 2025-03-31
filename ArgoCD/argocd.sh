@@ -32,7 +32,7 @@ argocd admin initial-password -n argocd
 
 ### Login
 
-#argocd login <ARGOCD_SERVER>
+#argocd login <ARGOCD_SERVER>:<ARGOCD_PORT>
 argocd login localhost:8080
 
 ### Change the password

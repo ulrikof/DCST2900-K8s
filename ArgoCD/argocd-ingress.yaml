@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: argocd.dsct2900.com
+    - host: argocd.dsct2900.com # Need DNS for this to work
       http:
         paths:
           - path: "/"
