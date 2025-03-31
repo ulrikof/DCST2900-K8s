@@ -7,7 +7,8 @@ The repository that contains argo-cd looks like this:
 ```
 ├── apps     # Optional folder, explained below
 ├── bootstrap
-└── projects
+├── projects
+└── scripts
 ```
 
 The `bootstrap` folder contains everything needed to install ArgoCD and bootstrap your applications:
