@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git # SSH URL to the Git repo
     targetRevision: HEAD  # You can use a specific branch, tag, or commit SHA
-    path: ArgoCD/envs/default  # Path inside the Git repo where the k8s manifests are stored
+    path: ArgoCD  # Path inside the Git repo where the k8s manifests are stored
     directory:
       recurse: true  # Recurse into subdirectories
   destination:
