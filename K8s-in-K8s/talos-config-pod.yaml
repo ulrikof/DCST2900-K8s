@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: talos-patches
+  namespace: test
+  labels:
+    app: talos-config
+    component: patches
+
+data:
+  all-patch.yaml: |
+    machine:
+      certSANs:
+        - 10.100.38.60
+    cluster:
+      network:
+        podSubnets:
+          - 10.245.0.0/16
+  worker-patch.yaml: |
+    machine:
+      kubelet:
+        extraMounts:
+          - destination: /var/lib/longhorn
+            type: bind
+            source: /var/lib/longhorn
+            options:
+              - bind
+              - rshared
+              - rw
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: talos-config-server
+  namespace: test
+  labels:
+    app: talos-config
+spec:
+  restartPolicy: Never
+  volumes:
+    - name: config-volume
+      emptyDir: {}
+    - name: patch-volume
+      configMap:
+        name: talos-patches
+  containers:
+    - name: talos-bootstrap
+      image: alpine:latest
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          apk add --no-cache curl bash tar python3 openssl && \
+          curl -sL https://talos.dev/install | sh && \
+          export IP=10.100.38.60 && \
+          mkdir -p /config && cd /config && \
+          cp /patches/*.yaml . && \
+          talosctl gen config K8s https://$IP:6443 \
+            --config-patch @all-patch.yaml \
+            --config-patch-worker @worker-patch.yaml && \
+          sleep 10 && \
+          echo "Waiting for first config fetch..." && \
+          while true; do \
+            if grep -q "/controlplane.yaml" /config/server.log; then \
+              echo "Controlplane config fetched! Bootstrapping..." && \
+              bootstrap_ip=$(grep "/controlplane.yaml" /config/server.log | head -n1 | awk '{print $1}') && \
+              echo "Bootstrap IP: $bootstrap_ip" && \
+              talosctl --talosconfig talosconfig config endpoint "$bootstrap_ip" && \
+              talosctl --talosconfig talosconfig config node "$bootstrap_ip" && \
+              sleep 10 && \
+              talosctl bootstrap --talosconfig talosconfig -n "$bootstrap_ip" -e "$bootstrap_ip" && \
+              talosctl kubeconfig . --talosconfig talosconfig -n "$bootstrap_ip" -e "$bootstrap_ip" && \
+              break; \
+            fi; \
+            echo "Still waiting for controlplane fetch..."; \
+            sleep 2; \
+          done
+      workingDir: /config
+      volumeMounts:
+        - name: config-volume
+          mountPath: /config
+        - name: patch-volume
+          mountPath: /patches
+
+    - name: talos-http-server
+      image: python:3
+      command: ["/bin/sh", "-c"]
+      args:
+        - python3 -m http.server 80 2>&1 | tee /config/server.log
+      workingDir: /config
+      volumeMounts:
+        - name: config-volume
+          mountPath: /config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: talos-config
+  namespace: test
+spec:
+  selector:
+    app: talos-config
+  ports:
+    - port: 80
+      targetPort: 80
