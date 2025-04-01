@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - talos-control-plane-1.yaml
+  - talos-control-plane-2.yaml
+  - talos-control-plane-3.yaml
+
+commonLabels:
+  app: talos-cluster
