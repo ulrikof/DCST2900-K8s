@@ -14,7 +14,7 @@ spec:
     metadata:
       name: "{{path.basename}}"  # Uses folder name as app name
     spec:
-      project: default
+      project: talos  # Project name defined in the talos-project.yaml file
       source:
         repoURL: git@github.com:ulrikof/DCST2900-K8s.git
         targetRevision: HEAD
