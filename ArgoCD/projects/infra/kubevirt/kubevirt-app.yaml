@@ -11,7 +11,7 @@ spec:
     path: ArgoCD/projects/infra/kubevirt
   destination:
     server: https://kubernetes.default.svc
-    namespace: kubevirt
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
