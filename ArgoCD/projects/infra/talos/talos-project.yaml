@@ -7,7 +7,7 @@ spec:
   sourceRepos:
     - git@github.com:ulrikof/DCST2900-K8s.git  # Allow this repo
   destinations:
-    - namespace: kubevirt  # Allow deploying to kubevirt namespace
+    - namespace: argocd  # Allow deploying to kubevirt namespace
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: "*"

@@ -11,7 +11,7 @@ spec:
     path: ArgoCD/projects/infra/talos  # Directory containing Talos VM definitions
   destination:
     server: https://kubernetes.default.svc
-    namespace: kubevirt  # Namespace where KubeVirt is deployed
+    namespace: argocd  # Namespace where Talos is deployed
   syncPolicy:
     automated:
       prune: true
