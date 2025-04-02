@@ -14,14 +14,14 @@ spec:
     metadata:
       name: "{{path.basename}}"  # Uses folder name as app name
     spec:
-      project: talos  # Project name defined in the talos-project.yaml file
+      project: kubevirt
       source:
         repoURL: git@github.com:ulrikof/DCST2900-K8s.git
         targetRevision: HEAD
         path: "{{path}}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: argocd
+        namespace: kubevirt
       syncPolicy:
         automated:
           prune: true
