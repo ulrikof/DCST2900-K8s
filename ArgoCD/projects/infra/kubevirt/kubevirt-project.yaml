@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: kubevirt
+  namespace: argocd
+spec:
+  sourceRepos:
+    - git@github.com:ulrikof/DCST2900-K8s.git
+  destinations:
+    - namespace: kubevirt  # Allow deployments in the `kubevirt` namespace
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  orphanedResources:
+    warn: true

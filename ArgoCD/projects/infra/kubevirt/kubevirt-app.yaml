@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubevirt
+  namespace: argocd
+spec:
+  project: kubevirt
+  source:
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    targetRevision: main
+    path: ArgoCD/projects/infra/kubevirt
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd  # Namespace where Talos is deployed
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+       - CreateNamespace=true
