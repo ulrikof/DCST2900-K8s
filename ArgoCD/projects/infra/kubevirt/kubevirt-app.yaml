@@ -11,10 +11,10 @@ spec:
     path: ArgoCD/projects/infra/kubevirt
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd  # Namespace where Talos is deployed
+    namespace: kubevirt
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-       - CreateNamespace=true
+      - CreateNamespace=true
