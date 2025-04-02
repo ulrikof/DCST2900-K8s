@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: kubevirt
-  namespace: argocd
+  namespace: kubevirt
 spec:
   project: kubevirt
   source:
