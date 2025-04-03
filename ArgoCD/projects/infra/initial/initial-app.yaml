@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd
+  name: argocd-infra
   namespace: argocd
 spec:
-  project: argocd
+  project: argocd-infra
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: main

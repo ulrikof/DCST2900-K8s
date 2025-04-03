@@ -10,7 +10,6 @@ spec:
         revision: HEAD
         directories:
           - path: ArgoCD/projects/infra/*
-            recurse: true
   template:
     metadata:
       name: "{{path.basename}}"  # Uses folder name as app name
@@ -20,6 +19,8 @@ spec:
         repoURL: git@github.com:ulrikof/DCST2900-K8s.git
         targetRevision: HEAD
         path: "{{path}}"
+        directory:
+          recurse: true
       destination:
         server: https://kubernetes.default.svc
         namespace: argocd
