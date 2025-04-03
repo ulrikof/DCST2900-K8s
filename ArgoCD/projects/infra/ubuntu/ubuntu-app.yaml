@@ -1,17 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-infra
-  namespace: argocd
+  name: ubuntu
+  namespace: ubuntu
 spec:
-  project: argocd-infra
+  project: ubuntu
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: main
-    path: ArgoCD/projects/infra/initial
+    path: ArgoCD/projects/infra/ubuntu
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: ubuntu
   syncPolicy:
     automated:
       prune: true

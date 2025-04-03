@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: argocd
-  namespace: argocd
+  name: ubuntu
+  namespace: ubuntu
 spec:
   sourceRepos:
     - git@github.com:ulrikof/DCST2900-K8s.git
   destinations:
-    - namespace: argocd
+    - namespace: ubuntu
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: "*"
