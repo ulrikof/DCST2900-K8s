@@ -1,0 +1,101 @@
+# 1. LoadBalancer Service fronting the Talos control plane and first 10 open ports
+apiVersion: v1
+kind: Service
+metadata:
+  name: talos-controlplane-lb
+spec:
+  selector:
+    app: talos-control-plane
+  type: LoadBalancer
+  loadBalancerIP: 10.100.38.60
+  ports:
+    - name: kube-apiserver
+      port: 6443
+      targetPort: 6443
+      protocol: TCP
+    - name: port-30000
+      port: 30000
+      targetPort: 30000
+      protocol: TCP
+    - name: port-30001
+      port: 30001
+      targetPort: 30001
+      protocol: TCP
+    - name: port-30002
+      port: 30002
+      targetPort: 30002
+      protocol: TCP
+    - name: port-30003
+      port: 30003
+      targetPort: 30003
+      protocol: TCP
+    - name: port-30004
+      port: 30004
+      targetPort: 30004
+      protocol: TCP
+    - name: port-30005
+      port: 30005
+      targetPort: 30005
+      protocol: TCP
+    - name: port-30006
+      port: 30006
+      targetPort: 30006
+      protocol: TCP
+    - name: port-30007
+      port: 30007
+      targetPort: 30007
+      protocol: TCP
+    - name: port-30008
+      port: 30008
+      targetPort: 30008
+      protocol: TCP
+    - name: port-30009
+      port: 30009
+      targetPort: 30009
+      protocol: TCP
+
+---
+# 2. Headless Service to allow DNS resolution to backend control plane VMs
+apiVersion: v1
+kind: Service
+metadata:
+  name: talos-controlplane-backend
+  namespace: test
+spec:
+  clusterIP: None
+  selector:
+    app: talos-control-plane
+  ports:
+    - name: kube-apiserver
+      port: 6443
+      targetPort: 6443
+    - name: port-30000
+      port: 30000
+      targetPort: 30000
+    - name: port-30001
+      port: 30001
+      targetPort: 30001
+    - name: port-30002
+      port: 30002
+      targetPort: 30002
+    - name: port-30003
+      port: 30003
+      targetPort: 30003
+    - name: port-30004
+      port: 30004
+      targetPort: 30004
+    - name: port-30005
+      port: 30005
+      targetPort: 30005
+    - name: port-30006
+      port: 30006
+      targetPort: 30006
+    - name: port-30007
+      port: 30007
+      targetPort: 30007
+    - name: port-30008
+      port: 30008
+      targetPort: 30008
+    - name: port-30009
+      port: 30009
+      targetPort: 30009
