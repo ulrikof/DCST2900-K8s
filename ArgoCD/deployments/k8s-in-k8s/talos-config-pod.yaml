@@ -76,7 +76,7 @@ spec:
           export IP=10.100.38.60 && \
           mkdir -p /config && cd /config && \
           cp /patches/*.yaml . && \
-          talosctl gen config K8s https://$IP:6443 \
+          talosctl gen config k8s-in-k8s https://$IP:6443 \
             --config-patch @all-patch.yaml \
             --config-patch-worker @worker-patch.yaml && \
           sleep 10 && \
