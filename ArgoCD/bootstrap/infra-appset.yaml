@@ -9,12 +9,12 @@ spec:
         repoURL: git@github.com:ulrikof/DCST2900-K8s.git
         revision: HEAD
         directories:
-          - path: projects/infra/*
+          - path: ArgoCD/projects/infra/*  # /* matches subdirectories only
   template:
     metadata:
       name: "{{path.basename}}"  # Uses folder name as app name
     spec:
-      project: argocd
+      project: default
       source:
         repoURL: git@github.com:ulrikof/DCST2900-K8s.git
         targetRevision: HEAD
