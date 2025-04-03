@@ -5,6 +5,8 @@ metadata:
   namespace: argocd
   annotations:
     kubectl.kubernetes.io/last-applied-configuration: ""
+  labels:
+    app.kubernetes.io/instance: ubuntu
 spec:
   project: ubuntu-project  # Use the project created in ubuntu-project.yaml
   source:
