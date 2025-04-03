@@ -1,18 +1,18 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: k8s-in-k8s
-#   namespace: argocd
-# spec:
-#   project: default
-#   source:
-#     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-#     targetRevision: main
-#     path: ArgoCD/deployments/k8s-in-k8s
-#   destination:
-#     server: https://kubernetes.default.svc
-#     namespace: k8s-in-k8s
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8s-in-k8s
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    targetRevision: main
+    path: ArgoCD/deployments/k8s-in-k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: k8s-in-k8s
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
