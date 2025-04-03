@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: ubuntu
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: ServerSideApply=true
 spec:
   project: ubuntu-project  # Use the project created in ubuntu-project.yaml
   source:
