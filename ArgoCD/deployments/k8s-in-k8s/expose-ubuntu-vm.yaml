@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ubuntu-ssh
+spec:
+  type: NodePort
+  selector:
+    kubevirt.io/domain: vm-ubuntu-22
+  ports:
+    - protocol: TCP
+      port: 20222
+      targetPort: 22
+      nodePort: 32000
