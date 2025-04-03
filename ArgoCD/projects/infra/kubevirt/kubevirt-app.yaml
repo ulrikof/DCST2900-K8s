@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kubevirt
+  name: argocd
   namespace: argocd
 spec:
-  project: kubevirt
+  project: argocd
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: main
     path: ArgoCD/projects/infra/kubevirt
   destination:
     server: https://kubernetes.default.svc
-    namespace: kubevirt
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true

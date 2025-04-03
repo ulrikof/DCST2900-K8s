@@ -14,14 +14,14 @@ spec:
     metadata:
       name: "{{path.basename}}"  # Uses folder name as app name
     spec:
-      project: kubevirt
+      project: argocd
       source:
         repoURL: git@github.com:ulrikof/DCST2900-K8s.git
         targetRevision: HEAD
         path: "{{path}}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: kubevirt
+        namespace: argocd
       syncPolicy:
         automated:
           prune: true
