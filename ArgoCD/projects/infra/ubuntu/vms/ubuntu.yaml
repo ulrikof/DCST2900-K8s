@@ -1,0 +1,55 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: vm-ubuntu-22
+  labels:
+    kubevirt.io/os: linux
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: dv-ubuntu-22
+      spec:
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: 5Gi
+        source:
+          http:
+            url: "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: vm-ubuntu-22
+    spec:
+      domain:
+        cpu:
+          cores: 2
+        resources:
+          requests:
+            memory: 1024M
+        devices:
+          disks:
+            - name: disk0
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              cdrom:
+                bus: sata
+                readonly: true
+      volumes:
+        - name: disk0
+          dataVolume:
+            name: dv-ubuntu-22
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              hostname: vm-ubuntu-22
+              ssh_pwauth: true
+              disable_root: false
+              ssh_authorized_keys:
+                - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCxExEcrFXA9fFlr1tnV60rlMRqNb+p3p14/Ti07mGSgdouW6ZRPz0ufIHMnMoaP2VHGmR8JZ+ugztsShqABsht/TpPCZmujivBQXtOZQDOrPi30IWUOkPrL4PWLrkfhzbngrEg/Ep4SNk5KGur17gaQ5XgUSzi1+Ha1nvVq/8ZJkjpMGqa99k11n2ZDjUNsbJiqjTrf3xCLIFnwFpHuL+2hsPC9as6ZSoKhO5vmHUI/ZB/WvQf5j38nAgYO0R/Yewnaf1OQxxluk8sDDyUg4ErCx5xniwsM/OI47besJ6dpfmFTi9H3yokz+ANm5Gz9FqsFrDwcy8XVm3dQf+cYDTfvhjSSAVcMM7UdHK8N4myYNpXMM0HBDs4r1zQzrYiaIYGUTHfzwFlGMjkQZkmhZ8b5sysMr6J0dZh6eN+h6Sl+8mrbaLni3scaO6SVjkdk0NdTYWbOM8gvvfJL5QCR129eCb8MAL/QOeAHPVH5Qgdp6tTDH72H2DTiFQOi1rogeU= ubuntu@manager

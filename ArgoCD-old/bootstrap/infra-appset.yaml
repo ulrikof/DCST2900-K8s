@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: infra-appset
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+        revision: HEAD
+        directories:
+          - path: ArgoCD/projects/infra/*  # /* matches subdirectories only
+  template:
+    metadata:
+      name: "{{path.basename}}"  # Uses folder name as app name
+    spec:
+      project: default
+      source:
+        repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+        targetRevision: HEAD
+        path: "{{path}}"  # Deploy everything in the directory
+        directory:
+          recurse: true
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{path.basename}}"  # Create a namespace per app
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
