@@ -6,16 +6,21 @@ metadata:
   labels:
     app: talos-config
     component: patches
-
 data:
   all-patch.yaml: |
     machine:
       certSANs:
         - 10.100.38.60
+      kubelet:
+        extraArgs:
+          rotate-server-certificates: true
     cluster:
       network:
         podSubnets:
           - 10.245.0.0/16
+      extraManifests:
+        - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml
+        - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
   worker-patch.yaml: |
     machine:
       kubelet:
@@ -27,6 +32,25 @@ data:
               - bind
               - rshared
               - rw
+  app-of-apps.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: app-of-apps
+      namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/ulrikof/argocd-test
+        targetRevision: main
+        path: apps
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
 ---
 apiVersion: v1
 kind: Pod
@@ -49,7 +73,7 @@ spec:
       command: ["/bin/sh", "-c"]
       args:
         - |
-          apk add --no-cache curl bash tar python3 openssl && \
+          apk add --no-cache curl bash tar python3 openssl kubectl && \
           curl -sL https://talos.dev/install | sh && \
           export IP=10.100.38.60 && \
           mkdir -p /config && cd /config && \
@@ -72,8 +96,24 @@ spec:
               break; \
             fi; \
             echo "Still waiting for controlplane fetch..."; \
-            sleep 2; \
-          done
+            sleep 10; \
+          done && \
+          export KUBECONFIG=/config/kubeconfig && \
+          echo "Waiting for all control plane nodes to be Ready..." && \
+          until [ "$(kubectl get nodes --no-headers 2>/dev/null | grep 'control-plane' | grep ' Ready ' | wc -l)" -eq 3 ]; do \
+            echo "Still waiting on control planes to be Ready..."; \
+            sleep 30; \
+          done && \
+          sleep 60 && \
+          echo "Control plane is fully Ready. Installing Argo CD..." && \
+          kubectl create namespace argocd && \
+          kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml && \
+          echo "Waiting for Argo CD components to be ready..." && \
+          kubectl wait deployment argocd-server -n argocd --for=condition=Available=True --timeout=180s && \
+          kubectl wait pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --for=condition=Ready --timeout=180s && \
+          echo "Applying Argo CD App of Apps..." && \
+          kubectl apply -f /patches/app-of-apps.yaml && \
+          echo "Done"
       workingDir: /config
       volumeMounts:
         - name: config-volume

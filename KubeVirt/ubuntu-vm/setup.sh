@@ -1,5 +1,3 @@
-PUBKEY=`cat ~/.ssh/id_rsa.pub`
-sed -i "s%ssh-rsa.*%$PUBKEY%" ubuntu-vm.yaml
 
 
 k apply -f ubuntu-vm.yaml
