@@ -10,4 +10,4 @@ spec:
     - protocol: TCP
       port: 20222
       targetPort: 22
-      nodePort: 33333
+      nodePort: 32000
