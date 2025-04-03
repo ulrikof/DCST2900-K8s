@@ -4,19 +4,19 @@ metadata:
   name: ubuntu
   namespace: argocd
 spec:
-  project: ubuntu
+  project: ubuntu-project  # Reference the Argo CD Project
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-    targetRevision: main
-    path: ArgoCD/projects/infra/ubuntu
+    targetRevision: HEAD
+    path: projects/infra/ubuntu  # Deploy everything inside ubuntu/
     directory:
-      recurse: true
+      recurse: true  # Apply all YAML files, including VMs
   destination:
     server: https://kubernetes.default.svc
-    namespace: ubuntu
+    namespace: ubuntu  # Deploy VM in a dedicated namespace
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
+      - CreateNamespace=true  # Ensure the namespace exists

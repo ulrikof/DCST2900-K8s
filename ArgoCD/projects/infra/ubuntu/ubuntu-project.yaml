@@ -1,14 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: ubuntu
+  name: ubuntu-project
   namespace: argocd
 spec:
+  description: Project for Ubuntu VM deployments
   sourceRepos:
-    - git@github.com:ulrikof/DCST2900-K8s.git
+    - git@github.com:ulrikof/DCST2900-K8s.git  # Allow only your repo
   destinations:
-    - namespace: ubuntu
+    - namespace: ubuntu  # Allow deployments only to "ubuntu-vm"
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
-    - group: "*"
-      kind: "*"
+    - group: '*'
+      kind: '*'  # Allow creating cluster-wide resources like Namespaces
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'  # Allow all namespace-scoped resources
+  orphanedResources:
+    warn: true  # Warn about orphaned resources in this project
