@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: ubuntu
-  namespace: ubuntu
+  namespace: argocd
 spec:
   sourceRepos:
     - git@github.com:ulrikof/DCST2900-K8s.git
