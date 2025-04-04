@@ -16,3 +16,10 @@ spec:
     automated:
       prune: true
       selfHeal: true
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      jsonPointers:
+        - /status
+        - /metadata/finalizers
+        - /metadata/annotations/argocd.argoproj.io~1refresh
