@@ -1,14 +1,14 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: ubuntu
+  name: { { .Values.name } }
   labels:
     kubevirt.io/os: linux
 spec:
   runStrategy: Always
   dataVolumeTemplates:
     - metadata:
-        name: ubuntu-dv
+        name: { { .Values.name } }
       spec:
         storage:
           accessModes:
@@ -16,21 +16,21 @@ spec:
           volumeMode: Filesystem
           resources:
             requests:
-              storage: 5Gi
+              storage: { { .Values.storageSize } }
         source:
           http:
-            url: "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+            url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
   template:
     metadata:
       labels:
-        kubevirt.io/domain: ubuntu
+        kubevirt.io/domain: { { .Values.name } }
     spec:
       domain:
         cpu:
-          cores: 2
+          cores: { { .Values.cpuCores } }
         resources:
           requests:
-            memory: 1024M
+            memory: { { .Values.memory } }
         devices:
           disks:
             - name: disk0
@@ -43,13 +43,13 @@ spec:
       volumes:
         - name: disk0
           dataVolume:
-            name: ubuntu-dv
+            name: { { .Values.name } }
         - name: cloudinitdisk
           cloudInitNoCloud:
             userData: |
               #cloud-config
-              hostname: ubuntu
+              hostname: {{ .Values.hostname }}
               ssh_pwauth: true
               disable_root: false
               ssh_authorized_keys:
-                - __placeholder_key__
+                - {{ .Values.sshKey }}

@@ -1,0 +1,6 @@
+name: vm-ubuntu
+hostname: vm-ubuntu
+memory: 1024M
+cpuCores: 2
+storageSize: 5Gi
+sshKey: ssh-rsa ...your-key-here... == your-user@your-host
