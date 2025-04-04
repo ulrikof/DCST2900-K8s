@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ubuntu-vm
+description: A Helm chart to deploy Ubuntu "22.04" VirtualMachines using KubeVirt
+type: application
+version: 0.1.0
+appVersion: "22.04"
