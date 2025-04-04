@@ -17,9 +17,8 @@ spec:
       prune: true
       selfHeal: true
   ignoreDifferences:
-    - group: argoproj.io
-      kind: Application
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      name: bgppeers.metallb.io
       jsonPointers:
-        - /status
-        - /metadata/finalizers
-        - /metadata/annotations/argocd.argoproj.io~1refresh
+        - /spec/conversion
