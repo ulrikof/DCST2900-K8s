@@ -1,6 +1,9 @@
-name: vm-ubuntu
-hostname: vm-ubuntu
-memory: 1024M
+name: ubuntu-vm
+hostname: ubuntu-vm
+sshKey: __your-ssh-key-here__
 cpuCores: 2
+memory: 1024M
 storageSize: 5Gi
-sshKey: ssh-rsa ...your-key-here... == your-user@your-host
+
+service:
+  loadBalancerIP: __your-metallb-ip-here__
