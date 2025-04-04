@@ -81,7 +81,7 @@ for ns_suffix in "${ns_array[@]}"; do
   echo "    [~] Labeling namespace '$ns'"
   kubectl label namespace "$ns" \
     "org=$org" \
-    "tenant=true" \
+    "tenant=tenant" \
     --overwrite
 
   binding_name="${group}-binding"
@@ -93,6 +93,9 @@ for ns_suffix in "${ns_array[@]}"; do
       --clusterrole="$clusterrole" \
       --group="$group"
   fi
+
+  echo "    [+] Applying org-allow-intra-namespace netpol for '$ns'."
+  kubectl apply -n $ns -f /home/ubuntu/allow-org-intra-namespace.yaml
 done
 
 echo "[✔] Org '$org' now has access to namespaces: $namespaces"

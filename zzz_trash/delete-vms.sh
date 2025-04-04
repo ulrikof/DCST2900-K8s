@@ -31,5 +31,5 @@ openstack server list \
   | awk -F'|' '{gsub(/ /,"",$3); print $3}' \
   | while read -r server_name; do
       echo "Deleting server: $server_name"
-    #   openstack server delete "$server_name"
+      openstack server delete "$server_name"
     done

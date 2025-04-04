@@ -15,7 +15,7 @@ spec:
                 - CREATE
                 - UPDATE
       validate:
-        failureAction: Enforce
+        failureAction: Audit
         message: "The label `org` is required for all resources."
         pattern:
           metadata:

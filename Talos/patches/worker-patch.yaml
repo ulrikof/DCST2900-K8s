@@ -8,3 +8,10 @@ machine:
           - bind
           - rshared
           - rw
+      - destination: /home/weave
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
