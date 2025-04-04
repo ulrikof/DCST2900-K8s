@@ -1,0 +1,49 @@
+apiVersion: pool.kubevirt.io/v1alpha1
+kind: VirtualMachinePool
+metadata:
+  name: talos-control-plane
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: talos-control-plane
+  virtualMachineTemplate:
+    metadata:
+      labels:
+        app: talos-control-plane
+        kubevirt.io/vmpool: talos-control-plane
+    spec:
+      runStrategy: Always
+      dataVolumeTemplates:
+        - metadata:
+            name: talos-controlplane-disk
+          spec:
+            storage:
+              accessModes: ["ReadWriteOnce"]
+              volumeMode: Filesystem
+              resources:
+                requests:
+                  storage: 20Gi
+            source:
+              http:
+                url: {{ .Values.controlPlaneImage }}
+      template:
+        metadata:
+          labels:
+            app: talos-control-plane
+        spec:
+          domain:
+            cpu:
+              cores: 2
+            resources:
+              requests:
+                memory: 10Gi
+            devices:
+              disks:
+                - name: disk0
+                  disk:
+                    bus: virtio
+          volumes:
+            - name: disk0
+              dataVolume:
+                name: talos-controlplane-disk
