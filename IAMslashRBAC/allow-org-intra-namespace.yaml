@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-intra-namespace-only
+spec:
+  podSelector: {}  # Apply to all pods in the namespace
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector: {}  # Allow from any pod in the same namespace
+  egress:
+    - to:
+        - podSelector: {}  # Allow to any pod in the same namespace

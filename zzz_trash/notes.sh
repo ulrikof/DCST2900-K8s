@@ -117,3 +117,9 @@ user="aksel"
 kubectl create clusterrolebinding $user-cluster-admin \
   --clusterrole=cluster-admin \
   --user=$user
+
+
+
+
+
+kubectl run test-pod --image=busybox --command -- sleep 3600

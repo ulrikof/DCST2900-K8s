@@ -30,14 +30,14 @@ done
 # Enforce required flags
 [[ -z "$count" || -z "$desc" ]] && usage
 
-# flavor="e2383865-a614-4dfe-97c6-b5d6e3369c7c" #gx1.2c2r
-flavor="2295f296-474a-4249-9774-ea442b145700" #gx1.1c2r
+flavor="e2383865-a614-4dfe-97c6-b5d6e3369c7c" #gx1.2c2r
+# flavor="2295f296-474a-4249-9774-ea442b145700" #gx1.1c2r
 network="f5493ccb-1084-4d75-9b1c-2a483bbeae17" #"Kubernetes"
 image="9944a3d8-3dc1-4266-bc14-1a8aa6e035ae" #TalosOS-Extended
 name="$desc-talos"
 cluster_name="$desc-cluster"
 port="6443"
-controlplane_count=3
+controlplane_count=1
 controlplane_name=""
 
 openstack server create \
@@ -69,7 +69,7 @@ while true; do
     fi
     if [ "$elapsed" -ge "$timeout" ]; then
         echo "Timeout waiting for IP address of $controlplane_name" >&2
-        # exit 1
+        exit 1
     fi
     echo "... waiting for ip on $controlplane_name"
     sleep "$interval"
@@ -129,7 +129,7 @@ for ip in $ips; do
             elapsed=$((elapsed + interval))
             if [ "$elapsed" -ge "$timeout" ]; then
                 echo "Timeout waiting for $ip:50000"
-                # exit 1
+                exit 1
             fi
         done
         talosctl --talosconfig $talosconfig apply-config --insecure --nodes $ip --file ./$cluster_name/controlplane.yaml
@@ -145,7 +145,7 @@ for ip in $ips; do
             elapsed=$((elapsed + interval))
             if [ "$elapsed" -ge "$timeout" ]; then
                 echo "Timeout waiting for $ip:50000t"
-                # exit 1
+                exit 1
             fi
         done
         talosctl --talosconfig $talosconfig apply-config --insecure --nodes $ip --file ./$cluster_name/worker.yaml
@@ -171,3 +171,5 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
 else
   echo "Skipping .bashrc update."
 fi
+
+# kubectl apply -f https://docs.projectcalico.org/manifests/canal.yaml
