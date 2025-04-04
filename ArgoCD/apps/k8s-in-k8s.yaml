@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8s-in-k8s
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    targetRevision: main
+    path: ArgoCD/charts/k8s-in-k8s
+    helm:
+      values: |
+        loadBalancerIP: 10.100.38.90
+        configLbIP: 10.100.38.91
+        controlPlaneImage: https://factory.talos.dev/image/9b602f0cf8bec7f82e7e55a66c575f64908c57f93ff44d5080e055fa9a399149/v1.9.5/metal-amd64.qcow2
+        workerImage: https://factory.talos.dev/image/db6e2943805b48452a5d6e1ffc55f39ee82e2382c000139653eb4c02b7746f5c/v1.9.5/metal-amd64.qcow2
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: k8s-in-k8s
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
