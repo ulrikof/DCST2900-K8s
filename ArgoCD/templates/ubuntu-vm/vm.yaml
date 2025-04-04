@@ -1,0 +1,55 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: ubuntu
+  labels:
+    kubevirt.io/os: linux
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: ubuntu-dv
+      spec:
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: 5Gi
+        source:
+          http:
+            url: "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: ubuntu
+    spec:
+      domain:
+        cpu:
+          cores: 2
+        resources:
+          requests:
+            memory: 1024M
+        devices:
+          disks:
+            - name: disk0
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              cdrom:
+                bus: sata
+                readonly: true
+      volumes:
+        - name: disk0
+          dataVolume:
+            name: ubuntu-dv
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              hostname: ubuntu
+              ssh_pwauth: true
+              disable_root: false
+              ssh_authorized_keys:
+                - __placeholder_key__
