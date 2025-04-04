@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/ulrikof/DCST2900-K8s.git
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: main
     path: ArgoCD/charts/ubuntu-vm/chart.yaml
     helm:
