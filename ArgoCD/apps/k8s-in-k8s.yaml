@@ -11,10 +11,10 @@ spec:
     path: ArgoCD/charts/k8s-in-k8s
     helm:
       values: |
-        loadBalancerIP: 10.100.38.90
-        configLbIP: 10.100.38.91
-        controlPlaneImage: https://factory.talos.dev/image/9b602f0cf8bec7f82e7e55a66c575f64908c57f93ff44d5080e055fa9a399149/v1.9.5/metal-amd64.qcow2
-        workerImage: https://factory.talos.dev/image/db6e2943805b48452a5d6e1ffc55f39ee82e2382c000139653eb4c02b7746f5c/v1.9.5/metal-amd64.qcow2
+        loadBalancerIP: 10.100.39.110
+        configLbIP: 10.100.39.111
+        controlPlaneImage: https://factory.talos.dev/image/10ea5b193d9fa6a2e75eda6f9f41a46d14225abd78d70074992c10b275f21e0d/v1.9.5/metal-amd64.qcow2
+        workerImage: https://factory.talos.dev/image/249f4f40b3bcaeffc1656c1d7c301daa0456418d279827d8709cbb5856b3b018/v1.9.5/metal-amd64.qcow2
   destination:
     server: https://kubernetes.default.svc
     namespace: k8s-in-k8s
