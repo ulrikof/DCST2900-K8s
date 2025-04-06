@@ -13,8 +13,8 @@ spec:
       values: |
         loadBalancerIP: 10.100.39.110
         configLbIP: 10.100.39.111
-        controlPlaneImage: https://factory.talos.dev/image/50aeb86cd408f60346086f2aad04a487e889ac14441a67775afce474edbe8abf/v1.9.5/metal-amd64.qcow2
-        workerImage: https://factory.talos.dev/image/6d7b96ad6996875a5a4588d15277e04cb032c0ba10f4208027721f0971aa944a/v1.9.5/metal-amd64.qcow2
+        controlPlaneImage: https://factory.talos.dev/image/38a5e9b9cfbaeb1054642d93fe3db18befe3e3e1d85a8a96524cdb9acb0643a6/v1.9.5/metal-amd64.qcow2
+        workerImage: https://factory.talos.dev/image/74a619d5d808973b6fc5f0d20e34ca3c9994720cc5094a05b087dacf8574649a/v1.9.5/metal-amd64.qcow2
   destination:
     server: https://kubernetes.default.svc
     namespace: k8s-in-k8s
