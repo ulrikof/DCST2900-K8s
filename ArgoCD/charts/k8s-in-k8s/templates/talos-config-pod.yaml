@@ -111,7 +111,8 @@ spec:
           kubectl wait pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --for=condition=Ready --timeout=180s && \
           echo "Applying Argo CD App of Apps..." && \
           kubectl apply -f /patches/app-of-apps.yaml && \
-          echo "Done"
+          echo "Done" && \
+          tail -f /dev/null
       workingDir: /config
       volumeMounts:
         - name: config-volume
