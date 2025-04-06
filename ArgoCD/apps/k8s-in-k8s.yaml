@@ -1,26 +1,26 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: k8s-in-k8s
-#   namespace: argocd
-# spec:
-#   project: default
-#   source:
-#     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-#     targetRevision: main
-#     path: ArgoCD/charts/k8s-in-k8s
-#     helm:
-#       values: |
-#         loadBalancerIP: 10.100.39.110
-#         configLbIP: 10.100.39.111
-#         controlPlaneImage: https://factory.talos.dev/image/10ea5b193d9fa6a2e75eda6f9f41a46d14225abd78d70074992c10b275f21e0d/v1.9.5/metal-amd64.qcow2
-#         workerImage: https://factory.talos.dev/image/249f4f40b3bcaeffc1656c1d7c301daa0456418d279827d8709cbb5856b3b018/v1.9.5/metal-amd64.qcow2
-#   destination:
-#     server: https://kubernetes.default.svc
-#     namespace: k8s-in-k8s
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8s-in-k8s
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    targetRevision: main
+    path: ArgoCD/charts/k8s-in-k8s
+    helm:
+      values: |
+        loadBalancerIP: 10.100.39.110
+        configLbIP: 10.100.39.111
+        controlPlaneImage: https://factory.talos.dev/image/10ea5b193d9fa6a2e75eda6f9f41a46d14225abd78d70074992c10b275f21e0d/v1.9.5/metal-amd64.qcow2
+        workerImage: https://factory.talos.dev/image/249f4f40b3bcaeffc1656c1d7c301daa0456418d279827d8709cbb5856b3b018/v1.9.5/metal-amd64.qcow2
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: k8s-in-k8s
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
