@@ -1,0 +1,20 @@
+machine:
+  certSANs:
+    - 10.100.38.20 
+  install:
+    disk: /dev/sda # The disk used for installations.
+    image: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245:v1.9.5  # Allows for supplying the image used to perform the installation.
+    wipe: true # Indicates if the installation disk should be wiped at installation time.
+  kubelet:
+    extraArgs:
+      rotate-server-certificates: true
+cluster:
+    network:
+        # The pod subnet CIDR.
+        podSubnets:
+            - 10.244.0.0/16
+        # The service subnet CIDR.
+        serviceSubnets:
+            - 10.112.0.0/12
+    extraManifests:
+      - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml

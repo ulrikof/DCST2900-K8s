@@ -29,9 +29,9 @@ curl -sL https://talos.dev/install | sh
 
 # 2.1 generate config files (ip needs to be the ip of a control plane node (or lb infront of control plane)):
 
-talosctl gen config K8s https://10.100.38.101:6443
+talosctl gen config K8s https://10.100.38.20:6443 --config-patch @all-patch.yaml --config-patch-worker @worker-patch.yaml
 
-# 2.2 set default endpoint and node in talosconfig file:
+# 2.2 set default endpoint and node in talosconfig file. should be one of the control plane nodes (not LB!) :
 
 talosctl --talosconfig talosconfig config endpoint 10.100.38.101
 talosctl --talosconfig talosconfig config node 10.100.38.101
@@ -40,7 +40,7 @@ talosctl --talosconfig talosconfig config node 10.100.38.101
 
 export TALOSCONFIG=~/talos/talosconfig
 
-# 2.4 Our version of Talos needs some extra configuration to the machine config files:
+# 2.4 Our version of Talos needs some extra configuration to the machine config files. This is automatically added by the patches in the gen config command above and does not need to be added manually:
 
 # 2.4.1 Extra config needed in both control-plane.yaml and worker.yaml
 
@@ -98,7 +98,7 @@ machine:
 # Apply config to control plane
 talosctl apply-config --insecure --nodes 10.100.38.101 --file controlplane.yaml
 talosctl apply-config --insecure --nodes 10.100.38.102 --file controlplane.yaml
-talosctl apply-config --insecure --nodes 10.100.38.103 --file controlplane.yam
+talosctl apply-config --insecure --nodes 10.100.38.103 --file controlplane.yaml
 
 # Apply config to workers
 talosctl apply-config --insecure --nodes 10.100.38.104 --file worker.yaml
