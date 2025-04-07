@@ -18,6 +18,9 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
   ignoreDifferences:
     - group: apiextensions.k8s.io
       kind: CustomResourceDefinition
