@@ -1,6 +1,6 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
+# apiVersion: kustomize.config.k8s.io/v1beta1
+# kind: Kustomization
 
-resources:
-  - https://github.com/kyverno/kyverno/releases/download/v1.13.4/install.yaml
-  - require-org-labels.yaml
+# resources:
+#   - https://github.com/kyverno/kyverno/releases/download/v1.13.4/install.yaml
+#   - require-org-labels.yaml
