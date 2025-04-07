@@ -21,6 +21,8 @@ spec:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: main
     path: ArgoCD/apps
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
