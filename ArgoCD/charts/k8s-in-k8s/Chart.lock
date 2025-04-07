@@ -1,0 +1,6 @@
+dependencies:
+- name: ubuntu-vm
+  repository: file://../ubuntu-vm
+  version: 0.1.0
+digest: sha256:42830c3d9d497d99afa959f3f01470d357003bb415178822c5c059b5b2c6bfae
+generated: "2025-04-07T10:27:17.588225+02:00"
