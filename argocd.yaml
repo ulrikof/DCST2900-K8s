@@ -1,18 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: test-aksel
+  name: app-of-apps
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: main
-    path: ArgoCD/deployments/test-aksel
+    path: ArgoCD/apps
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
-    namespace: test-aksel
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - Cascade=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=false
