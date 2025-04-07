@@ -4,3 +4,8 @@ description: Helm chart to deploy a Talos-based Kubernetes cluster inside Kubern
 type: application
 version: 0.1.0
 appVersion: "1.0"
+
+dependencies:
+  - name: ubuntu-vm
+    version: 0.1.0
+    repository: "file://../ubuntu-vm"
