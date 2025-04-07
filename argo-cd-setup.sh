@@ -10,27 +10,29 @@ rm argocd-linux-amd64
 
 argocd repo add git@github.com:ulrikof/DCST2900-K8s.git --ssh-private-key-path ~/.ssh/git-argo-key
 
-    apiVersion: argoproj.io/v1alpha1
-    kind: Application
-    metadata:
-      name: app-of-apps
-      namespace: argocd
-    spec:
-      project: default
-      source:
-        repoURL: https://github.com/ulrikof/DCST2900-K8s
-        targetRevision: main
-        path: ArgoCD/apps
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: argocd
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - PrunePropagationPolicy=foreground
-          - PruneLast=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    targetRevision: main
+    path: ArgoCD/apps
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
 
 
 # argocd cli
