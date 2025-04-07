@@ -24,7 +24,4 @@ spec:
       labels:
         createdby: argocd
     syncOptions:
-      - Cascade=true
-      - PrunePropagationPolicy=foreground
-      - PruneLast=true
       - CreateNamespace=true
