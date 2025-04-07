@@ -1,0 +1,15 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: talos-lb-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 10.100.39.1-10.100.39.244  # adjust to your free IPs
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: talos-lb-adv
+  namespace: metallb-system
+spec: {}
