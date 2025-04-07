@@ -1,29 +1,29 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: kyverno
-#   namespace: argocd
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-# spec:
-#   project: default
-#   sources:
-#     - chart: kyverno
-#       repoURL: https://kyverno.github.io/kyverno
-#       targetRevision: "*"
-#     - repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-#       targetRevision: main
-#       path: ArgoCD/deployments/policies/kyverno
-#   destination:
-#     namespace: kyverno
-#     server: https://kubernetes.default.svc
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
-#       - Replace=true
-#       - Cascade=true
-#       - PrunePropagationPolicy=foreground
-#       - PruneLast=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kyverno
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    - chart: kyverno
+      repoURL: https://kyverno.github.io/kyverno
+      targetRevision: "*"
+    - repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+      targetRevision: main
+      path: ArgoCD/deployments/policies/kyverno
+  destination:
+    namespace: kyverno
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+      # - Cascade=true
+      # - PrunePropagationPolicy=foreground
+      # - PruneLast=true
