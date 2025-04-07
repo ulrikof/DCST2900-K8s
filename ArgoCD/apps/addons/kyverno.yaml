@@ -11,7 +11,7 @@ spec:
   source:
     chart: kyverno
     repoURL: https://kyverno.github.io/kyverno
-    targetRevision: "1.13.0"
+    targetRevision: "*"
   # sources:
   #   - chart: kyverno
   #     repoURL: https://kyverno.github.io/kyverno
