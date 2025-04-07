@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: main
-    path: ArgoCD/deployments/longhorn
+    path: ArgoCD/deployments/addons/longhorn
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
