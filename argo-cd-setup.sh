@@ -28,6 +28,9 @@ argocd repo add git@github.com:ulrikof/DCST2900-K8s.git --ssh-private-key-path ~
         automated:
           prune: true
           selfHeal: true
+        syncOptions:
+          - PrunePropagationPolicy=foreground
+          - PruneLast=true
 
 
 # argocd cli
