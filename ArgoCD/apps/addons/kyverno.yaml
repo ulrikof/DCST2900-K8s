@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: kyverno
   namespace: argocd
+  finalizers:
+    # The default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
@@ -11,8 +14,39 @@ spec:
     path: ArgoCD/deployments/addons/kyverno
     kustomize: {}
   destination:
+    namespace: kyverno
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+      - Cascade=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: kyverno
+#   namespace: argocd
+# spec:
+#   destination:
+#     namespace: kyverno
+#     server: https://kubernetes.default.svc
+#   project: default
+#   source:
+#     chart: kyverno
+#     repoURL: https://kyverno.github.io/kyverno
+#     targetRevision: main
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
+#       - Replace=true
+#       - Cascade=true
+#       - PrunePropagationPolicy=foreground
+#       - PruneLast=true

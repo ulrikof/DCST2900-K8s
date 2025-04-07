@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: app-of-apps
   namespace: argocd
+  finalizers:
+    # The default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
@@ -18,7 +21,11 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    managedNamespaceMetadata:
+      labels:
+        createdby: argocd
     syncOptions:
       - Cascade=true
       - PrunePropagationPolicy=foreground
-      - PruneLast=false
+      - PruneLast=true
+      - CreateNamespace=true
