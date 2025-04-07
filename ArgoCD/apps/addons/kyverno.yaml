@@ -24,6 +24,3 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - Replace=true
-      # - Cascade=true
-      # - PrunePropagationPolicy=foreground
-      # - PruneLast=true
