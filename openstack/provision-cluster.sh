@@ -37,7 +37,7 @@ image="9944a3d8-3dc1-4266-bc14-1a8aa6e035ae" #TalosOS-Extended
 name="$desc-talos"
 cluster_name="$desc-cluster"
 port="6443"
-controlplane_count=1
+controlplane_count=3
 controlplane_name=""
 
 openstack server create \
