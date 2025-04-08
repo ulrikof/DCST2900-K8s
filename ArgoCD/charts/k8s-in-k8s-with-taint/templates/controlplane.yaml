@@ -37,18 +37,6 @@ spec:
               operator: "Equal"
               value: "talos"
               effect: "NoSchedule"
-          affinity:
-            podAntiAffinity:
-              preferredDuringSchedulingIgnoredDuringExecution:
-                - weight: 100
-                  podAffinityTerm:
-                    labelSelector:
-                      matchExpressions:
-                        - key: app
-                          operator: In
-                          values:
-                            - talos-control-plane
-                    topologyKey: "kubernetes.io/hostname"
           domain:
             cpu:
               cores: 2
