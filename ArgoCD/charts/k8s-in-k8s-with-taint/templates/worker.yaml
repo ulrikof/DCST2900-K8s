@@ -19,8 +19,7 @@ spec:
             name: talos-worker-disk
           spec:
             storage:
-              accessModes:
-                - ReadWriteOnce
+              accessModes: ["ReadWriteOnce"]
               volumeMode: Filesystem
               resources:
                 requests:
@@ -38,6 +37,15 @@ spec:
               operator: "Equal"
               value: "talos"
               effect: "NoSchedule"
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: dedicated
+                        operator: In
+                        values:
+                          - talos
           domain:
             cpu:
               cores: 2
