@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: test-rs
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+        - name: busybox
+          image: busybox
+          command: ["sh", "-c", "sleep 3600"]

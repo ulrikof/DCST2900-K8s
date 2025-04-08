@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: talos-worker-0
+  labels:
+    pod-owner: "a"
+spec:
+  taints:
+    - key: "pod-owner"
+      value: "a"
+      effect: "NoSchedule"
+    - key: "pod-owner"
+      value: "a"
+      effect: "NoExecute"
+---
+apiVersion: v1
+kind: Node
+metadata:
+  name: talos-worker-1
+  labels:
+    pod-owner: "b"
+spec:
+  taints:
+    - key: "pod-owner"
+      value: "b"
+      effect: "NoSchedule"
+    - key: "pod-owner"
+      value: "b"
+      effect: "NoExecute"

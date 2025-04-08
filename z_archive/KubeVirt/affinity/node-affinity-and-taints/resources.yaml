@@ -1,0 +1,107 @@
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: cirros-vm-a
+spec:
+  runStrategy: Always
+  template:
+    metadata:
+      labels:
+        vm: cirros-a
+    spec:
+      nodeSelector:
+        pod-owner: "a"
+      tolerations:
+        - key: "pod-owner"
+          operator: "Equal"
+          value: "a"
+          effect: "NoSchedule"
+      domain:
+        devices:
+          disks:
+            - name: containerdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+        resources:
+          requests:
+            memory: 64Mi
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: containerdisk
+          containerDisk:
+            image: quay.io/kubevirt/cirros-container-disk-demo
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userDataBase64: SGkuXG4=
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: cirros-vm-b
+spec:
+  runStrategy: Always
+  template:
+    metadata:
+      labels:
+        vm: cirros-b
+    spec:
+      nodeSelector:
+        pod-owner: "b"
+      tolerations:
+        - key: "pod-owner"
+          operator: "Equal"
+          value: "b"
+          effect: "NoSchedule"
+      domain:
+        devices:
+          disks:
+            - name: containerdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+        resources:
+          requests:
+            memory: 64Mi
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: containerdisk
+          containerDisk:
+            image: quay.io/kubevirt/cirros-container-disk-demo
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userDataBase64: SGkuXG4=
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: test-rs
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+        - name: busybox
+          image: busybox
+          command: ["sh", "-c", "sleep 3600"]
