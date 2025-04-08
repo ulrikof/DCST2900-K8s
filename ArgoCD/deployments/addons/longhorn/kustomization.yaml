@@ -14,14 +14,3 @@ patches:
       name: longhorn-frontend
       namespace: longhorn-system
     path: patch-longhorn-frontend-service.yaml
-
-patchesJson6902:
-  - target:
-      group: longhorn.io
-      version: v1beta2
-      kind: Setting
-      name: taint-toleration
-    patch: |-
-      - op: replace
-        path: /spec/value
-        value: ":"
