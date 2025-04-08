@@ -1,0 +1,15 @@
+# External IP to assign to the LoadBalancer service via MetalLB. This exposes the control plane
+loadBalancerIP: "__SET_LB_IP__"
+
+# Talos installer image for control plane nodes. Needs to be set with kernel arg: talos.config=<configLbIP>
+controlPlaneImage: "__SET_CONTROL_PLANE_IMAGE__"
+
+# Talos installer image for worker nodes. Needs to be set with kernel arg: talos.config=<configLbIP>
+workerImage: "__SET_WORKER_IMAGE__"
+
+ubuntu-vm:
+  name: ubuntu-vm
+  hostname: k8s-in-k8s
+  sshKey: __set_rsa_key__
+  service:
+    loadBalancerIP: __set_ip__
