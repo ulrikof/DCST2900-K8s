@@ -1,0 +1,73 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    kubevirt.io/os: linux
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: {{ .Values.name }}-dv
+      spec:
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: {{ .Values.storageSize }}
+        source:
+          http:
+            url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: {{ .Values.name }}
+    spec:
+      domain:
+        cpu:
+          cores: {{ .Values.cpuCores }}
+        resources:
+          requests:
+            memory: {{ .Values.memory }}
+        devices:
+          disks:
+            - name: disk0
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              cdrom:
+                bus: sata
+                readonly: true
+      volumes:
+        - name: disk0
+          dataVolume:
+            name: {{ .Values.name }}-dv
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              hostname: {{ .Values.hostname }}
+              ssh_pwauth: true
+              disable_root: false
+              ssh_authorized_keys:
+                - {{ .Values.sshKey }}
+{{- if .Values.dedicatedNode }}
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.dedicatedNode }}
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: {{ .Values.name }}
+          effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - {{ .Values.dedicatedNode }}
+{{- end }}
