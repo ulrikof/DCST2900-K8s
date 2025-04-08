@@ -9,3 +9,8 @@ patches:
       kind: Namespace
       name: longhorn-system
     path: namespace.yaml
+  - target:
+      kind: Service
+      name: longhorn-frontend
+      namespace: longhorn-system
+    path: patch-longhorn-frontend-service.yaml
