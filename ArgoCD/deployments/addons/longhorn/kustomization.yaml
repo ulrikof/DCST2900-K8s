@@ -16,4 +16,4 @@ patches:
     path: patch-longhorn-frontend-service.yaml
 
 patchesStrategicMerge:
-  - patch-taint-toleration.yaml
+  - longhorn-setting-patch.yaml
