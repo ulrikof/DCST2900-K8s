@@ -1,6 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
   - https://raw.githubusercontent.com/longhorn/longhorn/v1.8.1/deploy/longhorn.yaml
-  - longhorn-setting-patch.yaml
 
 patches:
   - target:
@@ -12,3 +14,6 @@ patches:
       name: longhorn-frontend
       namespace: longhorn-system
     path: patch-longhorn-frontend-service.yaml
+
+patchesStrategicMerge:
+  - patch-taint-toleration.yaml
