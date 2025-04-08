@@ -18,4 +18,4 @@ patches:
       kind: Setting
       name: taint-toleration
       namespace: longhorn-system
-    path: patch-taint-toleration.yaml
+    path: longhorn-setting-patch.yaml
