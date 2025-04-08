@@ -19,8 +19,10 @@ spec:
         dedicatedNode: talos-worker-1
   destination:
     server: https://kubernetes.default.svc
-    namespace: test-deployment
+    namespace: test
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+       - CreateNamespace=true
