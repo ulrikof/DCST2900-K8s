@@ -7,6 +7,8 @@
 # sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
 # rm argocd-linux-amd64
 
+# !!!!!!!!!!!!!!! DONT RUN THIS SCRIPT ON AUTO LOL
+
 if ! command -v argocd >/dev/null 2>&1; then
   echo "🔍 'argocd' not found. Installing Argo CD CLI..."
   curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
@@ -20,8 +22,12 @@ fi
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
+kubectl wait deployment argocd-server -n argocd --for=condition=Available=True --timeout=180s &
 # expose argocd instance and connect to repo
-(kubectl port-forward svc/argocd-server -n argocd 8080:443 &> /dev/null) & wait 2
+# kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "PortForward"}}'
+
+kubectl port-forward svc/argocd-server -n argocd 8080:443 &
+
 # If you leave the CLI without setting up permanent port-forwarding you will need to repeat this ^
 pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 argocd login localhost:8080 --username admin --password $pw --insecure
@@ -50,6 +56,7 @@ done
 
 # patch loadbalancer into config for argo cli
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+sleep 5
 ip=$(kubectl get service argocd-server -n argocd --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 argocd login $ip --username admin --password $pw --insecure

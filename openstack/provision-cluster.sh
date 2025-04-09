@@ -173,6 +173,8 @@ for ip in $ips; do
     fi
 done
 
+sleep 10
+# Add som logic to check if bootstrap is avaiable
 talosctl --talosconfig $talosconfig bootstrap --nodes $controlplane_ip
 talosctl --talosconfig $talosconfig kubeconfig $pwd/$cluster_name/ --nodes $controlplane_ip
 
