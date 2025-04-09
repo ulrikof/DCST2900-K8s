@@ -78,16 +78,37 @@ done
 
 echo "... gen config"
 
-talosctl gen config $cluster_name https://$controlplane_ip:$port
-mkdir -p ./$cluster_name/
-mv -v talosconfig "./$cluster_name/" 2>/dev/null
-mv -v controlplane.yaml "./$cluster_name/" 2>/dev/null
-mv -v worker.yaml "./$cluster_name/" 2>/dev/null
+pwd='/home/ubuntu'
 
-talosconfig="$(pwd)/$cluster_name/talosconfig"
+talosctl gen config $cluster_name https://$controlplane_ip:$port
+mkdir -p $pwd/$cluster_name/
+mv -v talosconfig "$pwd/$cluster_name/" 2>/dev/null
+mv -v controlplane.yaml "$pwd/$cluster_name/" 2>/dev/null
+mv -v worker.yaml "$pwd/$cluster_name/" 2>/dev/null
+
+talosconfig="$pwd/$cluster_name/talosconfig"
+kubeconfig="$pwd/$cluster_name/kubeconfig"
 talosctl --talosconfig $talosconfig config endpoint $controlplane_ip
 talosctl --talosconfig $talosconfig config node $controlplane_ip
 echo "... Making $controlplane_ip THE control plane"
+
+read -p "Do you want to make this the main cluster (update .bashrc)? [y/N]: " confirm
+
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+  echo "Exporting TALOSCONFIG and KUBECONFIG to ~/.bashrc"
+
+  talos_export="export TALOSCONFIG=\"$talosconfig\""
+  kube_export="export KUBECONFIG=\"$kubeconfig\""
+
+  # Prevent duplicate entries
+  grep -qxF "$talos_export" ~/.bashrc || echo "$talos_export" >> ~/.bashrc
+  grep -qxF "$kube_export" ~/.bashrc || echo "$kube_export" >> ~/.bashrc
+
+  echo "✅ ~/.bashrc updated. Run 'source ~/.bashrc' or restart your shell to apply."
+else
+  echo "Skipping .bashrc update."
+fi
+
 
 timeout=60
 interval=2
@@ -104,7 +125,7 @@ while ! nc -z "$controlplane_ip" "50000" 2>/dev/null; do
         exit 1
     fi
 done
-talosctl --talosconfig $talosconfig apply-config --insecure --nodes $controlplane_ip --file ./$cluster_name/controlplane.yaml
+talosctl --talosconfig $talosconfig apply-config --insecure --nodes $controlplane_ip --file $pwd/$cluster_name/controlplane.yaml
 
 
 ips=$(openstack server list \
@@ -132,7 +153,7 @@ for ip in $ips; do
                 exit 1
             fi
         done
-        talosctl --talosconfig $talosconfig apply-config --insecure --nodes $ip --file ./$cluster_name/controlplane.yaml
+        talosctl --talosconfig $talosconfig apply-config --insecure --nodes $ip --file $pwd/$cluster_name/controlplane.yaml
         count=$((count + 1))
     else
         echo "... Making $ip a worker"
@@ -144,32 +165,18 @@ for ip in $ips; do
             sleep "$interval"
             elapsed=$((elapsed + interval))
             if [ "$elapsed" -ge "$timeout" ]; then
-                echo "Timeout waiting for $ip:50000t"
+                echo "Timeout waiting for $ip:50000"
                 exit 1
             fi
         done
-        talosctl --talosconfig $talosconfig apply-config --insecure --nodes $ip --file ./$cluster_name/worker.yaml
+        talosctl --talosconfig $talosconfig apply-config --insecure --nodes $ip --file $pwd/$cluster_name/worker.yaml
     fi
 done
 
+sleep 10
+# Add som logic to check if bootstrap is avaiable
 talosctl --talosconfig $talosconfig bootstrap --nodes $controlplane_ip
-talosctl --talosconfig $talosconfig kubeconfig ./$cluster_name/ --nodes $controlplane_ip
+talosctl --talosconfig $talosconfig kubeconfig $pwd/$cluster_name/ --nodes $controlplane_ip
 
-read -p "Do you want to make this the main cluster (update .bashrc)? [y/N]: " confirm
-
-if [[ "$confirm" =~ ^[Yy]$ ]]; then
-  echo "Exporting TALOSCONFIG and KUBECONFIG to ~/.bashrc"
-
-  talos_export="export TALOSCONFIG=\"$talosconfig\""
-  kube_export="export KUBECONFIG=\"./$cluster_name/kubeconfig\""
-
-  # Prevent duplicate entries
-  grep -qxF "$talos_export" ~/.bashrc || echo "$talos_export" >> ~/.bashrc
-  grep -qxF "$kube_export" ~/.bashrc || echo "$kube_export" >> ~/.bashrc
-
-  echo "✅ ~/.bashrc updated. Run 'source ~/.bashrc' or restart your shell to apply."
-else
-  echo "Skipping .bashrc update."
-fi
 
 # kubectl apply -f https://docs.projectcalico.org/manifests/canal.yaml
