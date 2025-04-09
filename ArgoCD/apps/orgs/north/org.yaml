@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: { { .Values.org } }
+  name: north-org
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -11,8 +11,11 @@ spec:
     - repoURL: git@github.com:ulrikof/DCST2900-K8s.git
       targetRevision: main
       path: ArgoCD/manifests/org
+      helm:
+        valueFiles:
+          - ArgoCD/apps/orgs/north/values.yaml
   destination:
-    namespace: { { .Values.org } }
+    namespace: north-org
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
@@ -20,4 +23,26 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - PruneLast=true
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: north-org
+#   namespace: argocd
+# spec:
+#   project: default
+#   source:
+#     repoURL: https://github.com/ulrikof/DCST2900-K8s.git
+#     targetRevision: main
+#     path: manifests/org
+#     helm:
+#       valueFiles:
+#         - apps/orgs/north/values.yaml
+#   destination:
+#     namespace: north-org
+#     server: https://kubernetes.default.svc
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
