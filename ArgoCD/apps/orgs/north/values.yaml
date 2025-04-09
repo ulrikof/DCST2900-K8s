@@ -4,6 +4,8 @@
 
 org: north
 org-admin: north-admin
+busybox: busybox-north
+ns: north-org
 # replicaCount: 1
 
 # image:
