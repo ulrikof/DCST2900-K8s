@@ -9,7 +9,7 @@ spec:
   project: default
   sources:
     - repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-      targetRevision: network
+      targetRevision: main
       path: ArgoCD/manifests/org
   destination:
     namespace: { { .Values.org } }
