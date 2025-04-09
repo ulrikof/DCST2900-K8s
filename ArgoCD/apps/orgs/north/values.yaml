@@ -3,9 +3,9 @@
 # Declare variables to be passed into your templates.
 
 org: north
-orgadmin: northadmin
-busybox: busyboxnorth
-ns: northorg
+orgadmin: north-admin
+busybox: busybox-north
+ns: north-org
 # replicaCount: 1
 
 # image:
