@@ -9,7 +9,7 @@
 #   project: default
 #   source:
 #     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-#     targetRevision: network
+#     targetRevision: main
 #     path: ArgoCD/deployments/busybox
 #   destination:
 #     namespace: test-busybox

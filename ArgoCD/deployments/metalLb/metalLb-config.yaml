@@ -5,8 +5,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    # - 10.100.39.1-10.100.39.244  # adjust to your free IPs
-    - 192.168.0.225-192.168.0.240 # adjust to your free IPs
+    - 10.100.39.1-10.100.39.244  # adjust to your free IPs
 
 ---
 apiVersion: metallb.io/v1beta1
