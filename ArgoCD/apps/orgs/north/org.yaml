@@ -13,7 +13,7 @@ spec:
       path: ArgoCD/manifests/org
       helm:
         valueFiles:
-          - ArgoCD/apps/orgs/north/values.yaml
+          - ../../../ArgoCD/apps/orgs/north/values.yaml
   destination:
     namespace: north-org
     server: https://kubernetes.default.svc
