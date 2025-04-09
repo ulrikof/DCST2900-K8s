@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: canal
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    - repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+      targetRevision: network
+      path: ArgoCD/deployments/addons/canal
+    - repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+      targetRevision: network
+      path: ArgoCD/deployments/policies/canal
+  destination:
+    namespace: canal
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
