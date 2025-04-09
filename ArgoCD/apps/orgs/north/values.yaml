@@ -4,7 +4,7 @@
 
 org: north
 orgadmin: north-admin
-busybox: busybox-north
+busybox: busybox-north-2
 ns: north-org
 # replicaCount: 1
 
