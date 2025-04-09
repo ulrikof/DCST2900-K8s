@@ -9,8 +9,8 @@ spec:
   project: default
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-    targetRevision: main
-    path: ArgoCD/deployments/metalLb 
+    targetRevision: network
+    path: ArgoCD/deployments/metalLb
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
