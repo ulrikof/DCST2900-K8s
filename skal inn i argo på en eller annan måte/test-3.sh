@@ -26,18 +26,24 @@ for from_org in "${orgs[@]}"; do
           expected_pass="false"
         fi
 
-        # Run the nc check from source pod
-        if kubectl -n "$from_ns" exec -it "$from_pod" -- nc -zv -w1 "$to_svc" 80 >/dev/null 2>&1; then
+        # Build the command
+        cmd="kubectl -n $from_ns exec -it $from_pod -- nc -zv -w1 $to_svc 80"
+
+        # Show command before running
+        echo -e "\n\033[1;34mRunning:\033[0m $cmd"
+
+        # Execute command
+        if $cmd >/dev/null 2>&1; then
           actual_pass="true"
         else
           actual_pass="false"
         fi
 
-        # Status formatting
+        # Format results
         expected_str=$([[ "$expected_pass" == "true" ]] && echo "PASS" || echo "FAIL")
         actual_str=$([[ "$actual_pass" == "true" ]] && echo "PASS" || echo "FAIL")
 
-        if [ "$expected_pass" == "$actual_pass" ]; then
+        if [ "$actual_pass" == "$expected_pass" ]; then
           echo -e "\e[32mPASS (expected $expected_str got $actual_str)\e[0m FROM ${from_ns^^}-${from_num} TO ${to_ns^^}-${to_num}"
         else
           echo -e "\e[31mFAIL (expected $expected_str got $actual_str)\e[0m FROM ${from_ns^^}-${from_num} TO ${to_ns^^}-${to_num}"
