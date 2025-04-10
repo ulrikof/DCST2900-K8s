@@ -130,6 +130,9 @@ talosctl get extensions -n 10.100.38.103
 # 4. To remove the config on a talos node, you can reset it with this command:
 talosctl reset -n <node_ip_to_be_reset>
 
+talosctl reset --graceful=false --reboot=true -n 10.100.38.101,10.100.38.102,10.100.38.103,10.100.38.104,10.100.38.105,10.100.38.106,10.100.38.107,10.100.38.108,10.100.38.109,10.100.38.110
+
+
 # 5. To upgrade a talos node to another image, run this command:
 
 talosctl upgrade --nodes <node_ip_to_be_reset> --image <image_url>
