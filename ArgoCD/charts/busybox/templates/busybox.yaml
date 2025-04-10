@@ -10,8 +10,9 @@ spec:
       name: busybox
       command: [ "sh", "-c", "while true; do nc -lk -p 80; done" ]
       imagePullPolicy: IfNotPresent
-      # labels:
-      #   app: {{ $.Values.org }}-{{ . }}
+      labels:
+        app: {{ $.Values.org }}-{{ . }}
+        org: {{ $.Values.org }}
   restartPolicy: Always
 ---
 apiVersion: v1
@@ -21,8 +22,8 @@ metadata:
   namespace: {{ $.Values.ns }}
 spec:
   selector:
-    pod.kubernetes.io/name: {{ $.Values.org }}-{{ . }}
-    # app: {{ $.Values.org }}-{{ . }}
+    # pod.kubernetes.io/name: {{ $.Values.org }}-{{ . }}
+    app: {{ $.Values.org }}-{{ . }}
   ports:
     - protocol: TCP
       port: 80
