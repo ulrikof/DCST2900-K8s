@@ -24,4 +24,4 @@ spec:
                 kubernetes.io/metadata.name: kube-system
       ports:
         - protocol: UDP
-            port: 53
+          port: 53
