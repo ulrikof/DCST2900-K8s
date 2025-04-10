@@ -33,7 +33,7 @@ pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.dat
 argocd login localhost:8080 --username admin --password $pw --insecure
 argocd repo add git@github.com:ulrikof/DCST2900-K8s.git --ssh-private-key-path ~/.ssh/git-argo-key
 
-argocd app create app-of-apps --repo git@github.com:ulrikof/DCST2900-K8s.git --path ArgoCD 
+# argocd app create app-of-apps --repo git@github.com:ulrikof/DCST2900-K8s.git --path ArgoCD 
 
 # start app-of-apps
 pwd=$(pwd)
