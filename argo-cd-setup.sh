@@ -22,7 +22,7 @@ fi
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-kubectl wait deployment argocd-server -n argocd --for=condition=Available=True --timeout=180s &
+kubectl wait deployment argocd-server -n argocd --for=condition=Available=True --timeout=180s 
 # expose argocd instance and connect to repo
 # kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "PortForward"}}'
 
@@ -32,6 +32,8 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443 &
 pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 argocd login localhost:8080 --username admin --password $pw --insecure
 argocd repo add git@github.com:ulrikof/DCST2900-K8s.git --ssh-private-key-path ~/.ssh/git-argo-key
+
+argocd app create app-of-apps --repo git@github.com:ulrikof/DCST2900-K8s.git --path ArgoCD 
 
 # start app-of-apps
 pwd=$(pwd)
