@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -55,13 +56,12 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: talos-config-server
-  namespace: k8s-in-k8s
 spec:
-  serviceName: talos-config
-  replicas: 1
   selector:
     matchLabels:
       app: talos-config
+  serviceName: talos-config
+  replicas: 1
   template:
     metadata:
       labels:
@@ -69,11 +69,12 @@ spec:
     spec:
       restartPolicy: Always
       volumes:
-        - name: config-volume
-          emptyDir: {}
         - name: patch-volume
           configMap:
             name: talos-patches
+        - name: config-volume
+          persistentVolumeClaim:
+            claimName: config-volume
       containers:
         - name: talos-bootstrap
           image: alpine:latest
@@ -82,44 +83,50 @@ spec:
             - |
               apk add --no-cache curl bash tar python3 openssl kubectl && \
               curl -sL https://talos.dev/install | sh && \
-              export IP={{ .Values.loadBalancerIP }} && \
-              mkdir -p /config && cd /config && \
-              cp /patches/*.yaml . && \
-              talosctl gen config K8s-in-K8s https://$IP:6443 \
-                --config-patch @all-patch.yaml \
-                --config-patch-worker @worker-patch.yaml && \
-              sleep 10 && \
-              echo "Waiting for first config fetch..." && \
-              while true; do \
-                if grep -q "/controlplane.yaml" /config/server.log; then \
-                  echo "Controlplane config fetched! Bootstrapping..." && \
-                  bootstrap_ip=$(grep "/controlplane.yaml" /config/server.log | head -n1 | awk '{print $1}') && \
-                  echo "Bootstrap IP: $bootstrap_ip" && \
-                  talosctl --talosconfig talosconfig config endpoint "$bootstrap_ip" && \
-                  talosctl --talosconfig talosconfig config node "$bootstrap_ip" && \
-                  sleep 10 && \
-                  talosctl bootstrap --talosconfig talosconfig -n "$bootstrap_ip" -e "$bootstrap_ip" && \
-                  talosctl kubeconfig . --talosconfig talosconfig -n "$bootstrap_ip" -e "$bootstrap_ip" && \
-                  break; \
-                fi; \
-                echo "Still waiting for controlplane fetch..."; \
-                sleep 10; \
-              done && \
-              export KUBECONFIG=/config/kubeconfig && \
-              echo "Waiting for control planes to be Ready..." && \
-              until [ "$(kubectl get nodes --no-headers 2>/dev/null | grep 'control-plane' | grep ' Ready ' | wc -l)" -eq 3 ]; do \
-                echo "Still waiting on control planes to be Ready..."; \
-                sleep 30; \
-              done && \
-              sleep 60 && \
-              echo "Installing Argo CD..." && \
-              kubectl create namespace argocd && \
-              kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml && \
-              kubectl wait deployment argocd-server -n argocd --for=condition=Available=True --timeout=180s && \
-              kubectl wait pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --for=condition=Ready --timeout=180s && \
-              echo "Applying App of Apps..." && \
-              kubectl apply -f /patches/app-of-apps.yaml && \
-              echo "Bootstrap complete." && \
+              if [ ! -f /config/.bootstrapped ]; then
+                echo "Running bootstrap script..."
+                export IP={{ .Values.loadBalancerIP }} && \
+                mkdir -p /config && cd /config && \
+                cp /patches/*.yaml . && \
+                talosctl gen config K8s-in-K8s https://$IP:6443 \
+                  --config-patch @all-patch.yaml \
+                  --config-patch-worker @worker-patch.yaml && \
+                sleep 10 && \
+                echo "Waiting for first config fetch..." && \
+                while true; do \
+                  if grep -q "/controlplane.yaml" /config/server.log; then \
+                    echo "Controlplane config fetched! Bootstrapping..." && \
+                    bootstrap_ip=$(grep "/controlplane.yaml" /config/server.log | head -n1 | awk '{print $1}') && \
+                    echo "Bootstrap IP: $bootstrap_ip" && \
+                    talosctl --talosconfig talosconfig config endpoint "$bootstrap_ip" && \
+                    talosctl --talosconfig talosconfig config node "$bootstrap_ip" && \
+                    sleep 10 && \
+                    talosctl bootstrap --talosconfig talosconfig -n "$bootstrap_ip" -e "$bootstrap_ip" && \
+                    talosctl kubeconfig . --talosconfig talosconfig -n "$bootstrap_ip" -e "$bootstrap_ip" && \
+                    touch /config/.bootstrapped && \
+                    break; \
+                  fi; \
+                  echo "Still waiting for controlplane fetch..."; \
+                  sleep 10; \
+                done && \
+                export KUBECONFIG=/config/kubeconfig && \
+                echo "Waiting for control planes to be Ready..." && \
+                until [ "$(kubectl get nodes --no-headers 2>/dev/null | grep 'control-plane' | grep ' Ready ' | wc -l)" -eq 3 ]; do \
+                  echo "Still waiting on control planes to be Ready..."; \
+                  sleep 30; \
+                done && \
+                sleep 60 && \
+                echo "Installing Argo CD..." && \
+                kubectl create namespace argocd && \
+                kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml && \
+                kubectl wait deployment argocd-server -n argocd --for=condition=Available=True --timeout=180s && \
+                kubectl wait pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --for=condition=Ready --timeout=180s && \
+                echo "Applying App of Apps..." && \
+                kubectl apply -f /patches/app-of-apps.yaml && \
+                echo "Bootstrap complete."
+              else
+                echo "Already bootstrapped. Skipping bootstrap."
+              fi && \
               tail -f /dev/null
           workingDir: /config
           volumeMounts:
@@ -136,6 +143,18 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: /config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: config-volume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: longhorn
 ---
 apiVersion: v1
 kind: Service
