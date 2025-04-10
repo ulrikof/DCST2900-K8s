@@ -23,27 +23,28 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ $.Values.org }}-{{ . }}
+  name: {{ . }}
   namespace: {{ $.Values.ns }}
   labels:
-    app: {{ $.Values.org }}-{{ . }}
+    app: {{ . }}
 spec:
   containers:
     - image: busybox
       name: busybox
       command:
-        - while true; do nc -lk -p 80; done
+        - sleep
+        - "3600"
       imagePullPolicy: IfNotPresent
   restartPolicy: Always
 ---
-apiVersion: v1
+  apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $.Values.org }}-{{ . }}-svc
+  name: {{ . }}-svc
   namespace: {{ $.Values.ns }}
 spec:
   selector:
-    app: {{ $.Values.org }}-{{ . }}
+    app: {{ . }}
   ports:
     - protocol: TCP
       port: 80
