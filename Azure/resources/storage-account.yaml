@@ -1,0 +1,9 @@
+apiVersion: storage.azure.crossplane.io/v1alpha3
+kind: Account
+metadata:
+  name: example-storage
+spec:
+  resourceGroupName: example-rg
+  location: WestUS
+  sku:
+    name: Standard_LRS

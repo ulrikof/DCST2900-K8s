@@ -2,6 +2,13 @@
 
 ## Install Crossplane
 
+### Install the Crossplane CLI
+#https://docs.crossplane.io/latest/cli/
+
+#The Crossplane CLI is a single standalone binary with no external dependencies.
+curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/main/install.sh" | sh
+#The script detects your CPU architecture and downloads the latest stable release.
+
 ### Install the Crossplane Helm chart
 #Enable the Crossplane Helm Chart repository:
 helm repo add \
