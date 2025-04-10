@@ -2,10 +2,15 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+
+
 org: east
 orgadmin: east-admin
 busybox: busybox-east-2
 ns: east-org
+busyboxes:
+  - busybox-1
+  - busybox-2
 # replicaCount: 1
 
 # image:

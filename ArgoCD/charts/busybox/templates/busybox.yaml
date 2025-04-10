@@ -3,17 +3,51 @@
 # metadata:
 #   name: test-busybox
 # ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: {{ .Values.busybox }}
+#   namespace: {{ .Values.ns }}
+# spec:
+#   containers:
+#     - image: busybox
+#       command:
+#         - sleep
+#         - "3600"
+#       imagePullPolicy: IfNotPresent
+#       name: busybox
+#   restartPolicy: Always
+
+# ---
+{{- range .Values.busyboxes }}
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ .Values.busybox }}
-  namespace: {{ .Values.ns }}
+  name: {{ $.Values.org }}-{{ . }}
+  namespace: {{ $.Values.ns }}
+  labels:
+    app: {{ $.Values.org }}-{{ . }}
 spec:
   containers:
     - image: busybox
+      name: busybox
       command:
         - sleep
         - "3600"
       imagePullPolicy: IfNotPresent
-      name: busybox
   restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Values.org }}-{{ . }}-svc
+  namespace: {{ $.Values.ns }}
+spec:
+  selector:
+    app: {{ $.Values.org }}-{{ . }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+{{- end }}
