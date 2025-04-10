@@ -10,12 +10,12 @@ spec:
     - Egress
   ingress:
     - from:
-        - podSelector:
+        - namespaceSelector:
             matchLabels:
                 org: {{ .Values.org }}
   egress:
     - to:
-        - podSelector:
+        - namespaceSelector:
             matchLabels:
                 org: {{ .Values.org }}
     - to:
