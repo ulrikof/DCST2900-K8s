@@ -29,26 +29,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: east-org
-#   namespace: argocd
-# spec:
-#   project: default
-#   source:
-#     repoURL: https://github.com/ulrikof/DCST2900-K8s.git
-#     targetRevision: main
-#     path: manifests/org
-#     helm:
-#       valueFiles:
-#         - apps/orgs/east/values.yaml
-#   destination:
-#     namespace: east-org
-#     server: https://kubernetes.default.svc
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
