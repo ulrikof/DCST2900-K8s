@@ -1,14 +1,14 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: {{ .Values.ubuntu-vm.name }}
+  name: {{ .Values.ubuntuVM.name }}
   labels:
     kubevirt.io/os: linux
 spec:
   runStrategy: Always
   dataVolumeTemplates:
     - metadata:
-        name: {{ .Values.ubuntu-vm.name }}-dv
+        name: {{ .Values.ubuntuVM.name }}-dv
       spec:
         storage:
           accessModes:
@@ -16,21 +16,21 @@ spec:
           volumeMode: Filesystem
           resources:
             requests:
-              storage: {{ .Values.ubuntu-vm.storageSize }}
+              storage: {{ .Values.ubuntuVM.storageSize }}
         source:
           http:
             url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
   template:
     metadata:
       labels:
-        kubevirt.io/domain: {{ .Values.ubuntu-vm.name }}
+        kubevirt.io/domain: {{ .Values.ubuntuVM.name }}
     spec:
       domain:
         cpu:
-          cores: {{ .Values.ubuntu-vm.cpuCores }}
+          cores: {{ .Values.ubuntuVM.cpuCores }}
         resources:
           requests:
-            memory: {{ .Values.ubuntu-vm.memory }}
+            memory: {{ .Values.ubuntuVM.memory }}
         devices:
           disks:
             - name: disk0
@@ -43,16 +43,16 @@ spec:
       volumes:
         - name: disk0
           dataVolume:
-            name: {{ .Values.ubuntu-vm.name }}-dv
+            name: {{ .Values.ubuntuVM.name }}-dv
         - name: cloudinitdisk
           cloudInitNoCloud:
             userData: |
             #cloud-config
-            hostname: {{ .Values.ubuntu-vm.hostname }}
+            hostname: {{ .Values.ubuntuVM.hostname }}
             ssh_pwauth: true
             disable_root: false
             ssh_authorized_keys:
-                - {{ .Values.ubuntu-vm.sshKey }}
+                - {{ .Values.ubuntuVM.sshKey }}
 
             package_update: true
             packages:
