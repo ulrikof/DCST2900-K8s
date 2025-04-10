@@ -13,8 +13,10 @@ spec:
         - namespaceSelector:
             matchLabels:
               org: {{ .Values.org }}
+          podSelector: {}
   egress:
     - to:
         - namespaceSelector:
             matchLabels:
               org: {{ .Values.org }}
+          podSelector: {}
