@@ -39,7 +39,7 @@ kubectl apply -f $pwd/app-of-apps.yaml
 
 sleep 10
 
-kubectl apply -f $pwd/app-of-apps.yaml
+# kubectl apply -f $pwd/app-of-apps.yaml
 
 kubectl patch configmap argocd-cm \
   -n argocd \
@@ -58,6 +58,7 @@ done
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 sleep 5
 ip=$(kubectl get service argocd-server -n argocd --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 
 argocd login $ip --username admin --password $pw --insecure
 

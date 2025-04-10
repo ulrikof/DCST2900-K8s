@@ -1,28 +1,30 @@
-# {{- range .Values.busyboxes }}
-# apiVersion: v1
-# kind: Pod
-# metadata:
-#   name: {{ $.Values.org }}-{{ . }}
-#   namespace: {{ $.Values.ns }}
-# spec:
-#   containers:
-#     - image: busybox
-#       name: busybox
-#       command: [ "sh", "-c", "while true; do nc -lk -p 80; done" ]
-#       imagePullPolicy: IfNotPresent
-#   restartPolicy: Always
-# ---
-#   apiVersion: v1
-# kind: Service
-# metadata:
-#   name: {{ $.Values.org }}-{{ . }}-svc
-#   namespace: {{ $.Values.ns }}
-# spec:
-#   selector:
-#     app: {{ $.Values.org }}-{{ . }}
-#   ports:
-#     - protocol: TCP
-#       port: 80
-#       targetPort: 80
-# ---
-# {{- end }}
+{{- range .Values.busyboxes }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ $.Values.org }}-{{ . }}
+  namespace: {{ $.Values.ns }}
+spec:
+  containers:
+    - image: busybox
+      name: busybox
+      command: [ "sh", "-c", "while true; do nc -lk -p 80; done" ]
+      imagePullPolicy: IfNotPresent
+      labels:
+        app: {{ $.Values.org }}-{{ . }}
+  restartPolicy: Always
+---
+  apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Values.org }}-{{ . }}-svc
+  namespace: {{ $.Values.ns }}
+spec:
+  selector:
+    app: {{ $.Values.org }}-{{ . }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+{{- end }}
