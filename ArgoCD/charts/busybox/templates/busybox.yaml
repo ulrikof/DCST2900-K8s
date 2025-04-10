@@ -38,7 +38,7 @@ spec:
   apiVersion: v1
 kind: Service
 metadata:
-  name: {{ . }}-svc
+  name: {{ $.Values.org }}-{{ . }}-svc
   namespace: {{ $.Values.ns }}
 spec:
   selector:
