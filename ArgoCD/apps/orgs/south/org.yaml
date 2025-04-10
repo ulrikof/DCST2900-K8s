@@ -13,13 +13,13 @@ spec:
       path: ArgoCD/charts/org
       helm:
         valueFiles:
-          - ../../../ArgoCD/apps/orgs/north/values.yaml
+          - ../../../ArgoCD/apps/orgs/south/values.yaml
     - repoURL: git@github.com:ulrikof/DCST2900-K8s.git
       targetRevision: main
       path: ArgoCD/charts/busybox
       helm:
         valueFiles:
-          - ../../../ArgoCD/apps/orgs/north/values.yaml
+          - ../../../ArgoCD/apps/orgs/south/values.yaml
   destination:
     namespace: south-org
     server: https://kubernetes.default.svc
@@ -32,7 +32,7 @@ spec:
 # apiVersion: argoproj.io/v1alpha1
 # kind: Application
 # metadata:
-#   name: north-org
+#   name: south-org
 #   namespace: argocd
 # spec:
 #   project: default
@@ -42,9 +42,9 @@ spec:
 #     path: manifests/org
 #     helm:
 #       valueFiles:
-#         - apps/orgs/north/values.yaml
+#         - apps/orgs/south/values.yaml
 #   destination:
-#     namespace: north-org
+#     namespace: south-org
 #     server: https://kubernetes.default.svc
 #   syncPolicy:
 #     automated:
