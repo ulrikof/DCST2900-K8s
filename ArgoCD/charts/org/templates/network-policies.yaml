@@ -4,7 +4,7 @@ metadata:
   name: allow-intra-namespace-only
   namespace: {{ .Values.ns }}
 spec:
-  podSelector: {}  # Apply to all pods in the namespace
+  podSelector: {} # Apply to all pods in the namespace
   policyTypes:
     - Ingress
     - Egress
@@ -12,9 +12,9 @@ spec:
     - from:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: {{ .Values.ns }}
+              org: {{ .Values.org }}
   egress:
     - to:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: {{ .Values.ns }}
+              org: {{ .Values.org }}
