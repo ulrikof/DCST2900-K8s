@@ -47,10 +47,10 @@ spec:
                             - talos-worker
           domain:
             cpu:
-              cores: 2
+              cores: 5
             resources:
               requests:
-                memory: 10Gi
+                memory: 20Gi
             devices:
               disks:
                 - name: disk0
