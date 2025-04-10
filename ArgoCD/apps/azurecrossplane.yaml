@@ -1,14 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: crossplane
+  name: azure-crossplane
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://charts.crossplane.io/stable
-    targetRevision: 1.19.1
-    chart: crossplane
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    targetRevision: azure
+    path: ArgoCD/apps/crossplane
   destination:
     server: https://kubernetes.default.svc
     namespace: crossplane-system

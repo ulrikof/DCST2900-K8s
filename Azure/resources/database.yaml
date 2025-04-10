@@ -1,9 +1,9 @@
 apiVersion: network.azure.upbound.io/v1beta1
 kind: Database
 metadata:
-  name: crossplane-quickstart-database
+  name: db-crossplane
 spec:
   forProvider:
     location: "West Europe"
-    resourceGroupName: rg-crossplane-testing
+    resourceGroupName: rg-crossplane
     databaseName: crossplane-quickstart-database

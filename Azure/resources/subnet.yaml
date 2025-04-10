@@ -1,0 +1,11 @@
+apiVersion: network.azure.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  name: snet-crossplane
+spec:
+  resourceGroupName: rg-crossplane
+  virtualNetworkName: vnet-crossplane
+  properties:
+    addressPrefix: 10.0.0.0/24
+    serviceEndpoints:
+      - service: Microsoft.Sql
