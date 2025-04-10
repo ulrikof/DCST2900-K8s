@@ -29,9 +29,7 @@ spec:
   containers:
     - image: busybox
       name: busybox
-      command:
-        - sleep
-        - "3600"
+      command: [ "sh", "-c", "while true; do nc -lk -p 80; done" ]
       imagePullPolicy: IfNotPresent
   restartPolicy: Always
 ---
