@@ -152,9 +152,6 @@ for ip in $ips; do
     fi
 done
 
-talosctl --talosconfig $talosconfig bootstrap --nodes $controlplane_ip
-talosctl --talosconfig $talosconfig kubeconfig ./$cluster_name/ --nodes $controlplane_ip
-
 read -p "Do you want to make this the main cluster (update .bashrc)? [y/N]: " confirm
 
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
@@ -171,5 +168,8 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
 else
   echo "Skipping .bashrc update."
 fi
+
+talosctl --talosconfig $talosconfig bootstrap --nodes $controlplane_ip
+talosctl --talosconfig $talosconfig kubeconfig ./$cluster_name/ --nodes $controlplane_ip
 
 # kubectl apply -f https://docs.projectcalico.org/manifests/canal.yaml

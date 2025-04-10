@@ -9,8 +9,8 @@ spec:
   project: default
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-    targetRevision: main
-    path: ArgoCD/apps
+    targetRevision: azure
+    path: ArgoCD/apps/crossplane
     directory:
       recurse: true
   destination:
