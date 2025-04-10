@@ -12,7 +12,6 @@ rm argocd-linux-amd64
 (kubectl port-forward svc/argocd-server -n argocd 8080:443 &> /dev/null) &
 # If you leave the CLI without setting up permanent port-forwarding you will need to repeat this ^
 pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-#argocd account update-password # Change password if you want to
 argocd login localhost:8080 --username admin --password $pw --insecure
 argocd repo add git@github.com:ulrikof/DCST2900-K8s.git --ssh-private-key-path ~/.ssh/git-argo-key
 
@@ -32,3 +31,4 @@ ip=$(kubectl get service argocd-server -n argocd --output=jsonpath='{.status.loa
 argocd login $ip --username admin --password $pw --insecure
 
 # we should probably change password at some point
+#argocd account update-password # Change password if you want to
