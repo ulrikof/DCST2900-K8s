@@ -15,13 +15,13 @@ rm argocd-linux-amd64
 
 ## 3. Access The ArgoCD API Server
 
-### Service Type NodePort
-
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
-
 ### Port Forwarding
 
 kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+### Service Type NodePort
+
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
 
 
 ## 4. Login using the CLI
