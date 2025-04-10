@@ -12,7 +12,7 @@ hpa:
   minWorkers: 2 
   maxWorkers: 6
 
-ubuntu-vm:
+ubuntuVM:
   name: ubuntu-vm
   hostname: k8s-in-k8s
   sshKey: __set_rsa_key__
