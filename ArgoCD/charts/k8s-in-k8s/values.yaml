@@ -7,9 +7,10 @@ controlPlaneImage: "__SET_CONTROL_PLANE_IMAGE__"
 # Talos installer image for worker nodes. Needs to be set with kernel arg: talos.config=<configLbIP>
 workerImage: "__SET_WORKER_IMAGE__"
 
-targetCPU: 90
-minWorkers: 2 
-maxWorkers: 6
+hpa:
+  targetCPU: 90
+  minWorkers: 2 
+  maxWorkers: 6
 
 ubuntu-vm:
   name: ubuntu-vm
