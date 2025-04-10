@@ -10,7 +10,11 @@ spec:
     - Egress
   ingress:
     - from:
-        - podSelector: {}  # Allow from any pod in the same namespace
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.ns }}
   egress:
     - to:
-        - podSelector: {}  # Allow to any pod in the same namespace
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.ns }}
