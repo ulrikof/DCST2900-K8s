@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: azure
-    path: ArgoCD/apps/crossplane
+    path: ArgoCD/deployments/azure
   destination:
     server: https://kubernetes.default.svc
     namespace: crossplane-system
