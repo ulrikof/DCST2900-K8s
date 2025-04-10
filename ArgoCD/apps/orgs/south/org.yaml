@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: north-org
+  name: south-org
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -21,7 +21,7 @@ spec:
         valueFiles:
           - ../../../ArgoCD/apps/orgs/north/values.yaml
   destination:
-    namespace: north-org
+    namespace: south-org
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
