@@ -14,7 +14,7 @@ spec:
         app: {{ $.Values.org }}-{{ . }}
   restartPolicy: Always
 ---
-  apiVersion: v1
+apiVersion: v1
 kind: Service
 metadata:
   name: {{ $.Values.org }}-{{ . }}-svc
