@@ -19,7 +19,7 @@ metadata:
   namespace: {{ $.Values.ns }}
 spec:
   selector:
-    app: {{ . }}
+    app: {{ $.Values.org }}-{{ . }}
   ports:
     - protocol: TCP
       port: 80
