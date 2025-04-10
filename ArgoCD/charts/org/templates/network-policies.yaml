@@ -12,16 +12,16 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-                {{ .Values.org }}
+                org: {{ .Values.org }}
   egress:
     - to:
         - podSelector:
             matchLabels:
-                {{ .Values.org }}
-    # - to:
-    #     - namespaceSelector:
-    #         matchLabels:
-    #             kubernetes.io/metadata.name: kube-system
-    #   ports:
-    #     - protocol: UDP
-    #       port: 53
+                org: {{ .Values.org }}
+    - to:
+        - namespaceSelector:
+            matchLabels:
+                kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
