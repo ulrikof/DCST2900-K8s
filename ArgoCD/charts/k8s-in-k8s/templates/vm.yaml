@@ -47,20 +47,20 @@ spec:
         - name: cloudinitdisk
           cloudInitNoCloud:
             userData: |
-            #cloud-config
-            hostname: {{ .Values.ubuntuVM.hostname }}
-            ssh_pwauth: true
-            disable_root: false
-            ssh_authorized_keys:
+              #cloud-config
+              hostname: {{ .Values.ubuntuVM.hostname }}
+              ssh_pwauth: true
+              disable_root: false
+              ssh_authorized_keys:
                 - {{ .Values.ubuntuVM.sshKey }}
 
-            package_update: true
-            packages:
+              package_update: true
+              packages:
                 - snapd
                 - curl
 
-            runcmd:
-                - [ sh, -c, "sleep 10" ]  # Let snapd settle
+              runcmd:
+                - [ sh, -c, "sleep 10" ]
                 - [ sh, -c, "snap install kubectl --classic" ]
                 - [ sh, -c, "curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" ]
                 - [ sh, -c, "install -m 555 argocd-linux-amd64 /usr/local/bin/argocd" ]
