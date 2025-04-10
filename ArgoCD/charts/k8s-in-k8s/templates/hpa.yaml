@@ -3,7 +3,6 @@ kind: HorizontalPodAutoscaler
 metadata:
   creationTimestamp: null
   name: virtual-cluster-worker-scaler
-  namespace: test
 spec:
   maxReplicas: {{ .Values.maxWorkers }}
   minReplicas: {{ .Values.minWorkers }}
