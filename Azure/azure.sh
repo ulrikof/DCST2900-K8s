@@ -43,7 +43,7 @@ kind: Provider
 metadata:
   name: provider-azure-network
 spec:
-  package: xpkg.crossplane.io/crossplane-contrib/provider-azure-network:v1.11.2
+  package: xpkg.crossplane.io/crossplane-contrib/provider-azure-network:v1.11.3
 EOF
 
 #Verify the provider installed
