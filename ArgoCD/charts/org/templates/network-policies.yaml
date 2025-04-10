@@ -10,13 +10,18 @@ spec:
     - Egress
   ingress:
     - from:
-        - namespaceSelector:
+        - podSelector:
             matchLabels:
-              org: {{ .Values.org }}
-          podSelector: {}
+                {{ .Values.org }}
   egress:
+    - to:
+        - podSelector:
+            matchLabels:
+                {{ .Values.org }}
     - to:
         - namespaceSelector:
             matchLabels:
-              org: {{ .Values.org }}
-          podSelector: {}
+                kubernetes.io/metadata.name: kube-system
+        ports:
+        - protocol: UDP
+            port: 53
