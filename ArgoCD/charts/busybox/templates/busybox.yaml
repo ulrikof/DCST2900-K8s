@@ -4,15 +4,15 @@ kind: Pod
 metadata:
   name: {{ $.Values.org }}-{{ . }}
   namespace: {{ $.Values.ns }}
+  labels:
+    app: {{ $.Values.org }}-{{ . }}
+    org: {{ $.Values.org }}
 spec:
   containers:
     - image: busybox
       name: busybox
       command: [ "sh", "-c", "while true; do nc -lk -p 80; done" ]
       imagePullPolicy: IfNotPresent
-      labels:
-        app: {{ $.Values.org }}-{{ . }}
-        org: {{ $.Values.org }}
   restartPolicy: Always
 ---
 apiVersion: v1
