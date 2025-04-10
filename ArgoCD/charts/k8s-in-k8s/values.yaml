@@ -14,7 +14,9 @@ hpa:
 
 ubuntuVM:
   name: ubuntu-vm
-  hostname: k8s-in-k8s
-  sshKey: __set_rsa_key__
-  service:
-    loadBalancerIP: __set_ip__
+  hostname: ubuntu-vm
+  sshKey: __your-ssh-key-here__
+  cpuCores: 2
+  memory: 1Gi
+  storageSize: 5Gi
+  loadBalancerIP: __your-metallb-ip-here__
