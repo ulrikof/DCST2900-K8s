@@ -73,9 +73,9 @@ csr_b64=$(base64 < "$user.csr" | tr -d '\n')
 
 # Save user info as a YAML file
 cat <<EOF > $user.yaml
-userName: $user
-csr: |
-  $csr_b64
+- userName: $user
+  csr: |
+    $csr_b64
 EOF
 
 # Print GitOps-pasteable YAML
