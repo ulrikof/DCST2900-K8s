@@ -8,6 +8,7 @@ org_name=""
 org_ns=""
 role=""
 
+
 usage() {
   echo "Usage: $0 --user <username> --org <org-name> --namespace <org-namespace> --role <admin|viewer>"
   exit 1
@@ -71,14 +72,60 @@ openssl req -new -key "$user.key" -out "$user.csr" -subj "/CN=$user/O=$org_name-
 # Base64 encode the CSR
 csr_b64=$(base64 < "$user.csr" | tr -d '\n')
 
-# Save user info as a YAML file
+# Save GitOps-friendly snippet
 cat <<EOF > $user.yaml
 - userName: $user
   csr: |
     $csr_b64
 EOF
 
-# Print GitOps-pasteable YAML
+# Copy certs and kubeconfig to user home
+home_kube_dir="/home/$user/.kube"
+mkdir -p "$home_kube_dir"
+
+# Simulate CA cert (replace this path if using real CA cert)
+cp "/etc/kubernetes/pki/ca.crt" "$home_kube_dir/ca.crt" 2>/dev/null || touch "$home_kube_dir/ca.crt"
+
+# Copy cert/key to user kube dir
+cp "$user.key" "$home_kube_dir/client.key"
+touch "$home_kube_dir/client.crt"  # Placeholder — Argo will approve and install this
+
+# Create kubeconfig
+server_ip=$(talosctl --talosconfig $talosconfig_path get info \
+  | awk '/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/ { print $1 }')
+cat <<EOF > "$home_kube_dir/config"
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    certificate-authority: $home_kube_dir/ca.crt
+    server: https://$server_ip:6443
+  name: local-cluster
+contexts:
+- context:
+    cluster: local-cluster
+    namespace: $org_ns
+    user: $user
+  name: ${user}-context
+current-context: ${user}-context
+users:
+- name: $user
+  user:
+    client-certificate: $home_kube_dir/client.crt
+    client-key: $home_kube_dir/client.key
+EOF
+
+# Fix permissions
+chown -R $user:$user "/home/$user/.kube"
+chmod 600 /home/$user/.kube/*
+
+# Set env var for login shells
+grep -qxF "export KUBECONFIG=/home/$user/.kube/config" /home/$user/.bashrc || \
+  echo "export KUBECONFIG=/home/$user/.kube/config" >> /home/$user/.bashrc
+
+chown $user:$user /home/$user/.bashrc
+
+# Output GitOps snippet
 echo ""
 echo "# Generated user cert request for '$user'"
 echo ""
@@ -89,4 +136,5 @@ echo "---------------------------- COPY BELOW -----------------------------"
 cat $user.yaml | sed 's/^/      /'
 echo "---------------------------- COPY ABOVE -----------------------------"
 echo ""
-echo "# Done. CSR and key stored in: $user_dir"
+echo "# Done. TLS assets in: $user_dir"
+echo "# Kubeconfig set up for user: $user"
