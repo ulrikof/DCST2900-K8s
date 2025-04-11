@@ -38,16 +38,12 @@ data:
     metadata:
       name: app-of-apps
       namespace: argocd
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
     spec:
       project: default
       source:
-        repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-        targetRevision: network
-        path: ArgoCD/apps/addons
-        directory:
-          recurse: true
+        repoURL: https://github.com/ulrikof/argocd-test
+        targetRevision: main
+        path: apps
       destination:
         server: https://kubernetes.default.svc
         namespace: argocd
@@ -55,11 +51,6 @@ data:
         automated:
           prune: true
           selfHeal: true
-        managedNamespaceMetadata:
-          labels:
-            createdby: argocd
-        syncOptions:
-          - CreateNamespace=true
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -84,22 +75,14 @@ spec:
         - name: config-volume
           persistentVolumeClaim:
             claimName: config-volume
-        - name: ssh-key
-          secret:
-            secretName: git-argo-key
       containers:
         - name: talos-bootstrap
           image: alpine:latest
           command: ["/bin/sh", "-c"]
           args:
             - |
-              apk add --no-cache curl bash tar python3 openssl kubectl openssh-client && \
-              curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && \
-              chmod +x /usr/local/bin/argocd && \
-              mkdir -p ~/.ssh && \
-              cp /ssh-key/git-argo-key ~/.ssh/id_rsa && \
-              chmod 600 ~/.ssh/id_rsa && \
-              ssh-keyscan github.com >> ~/.ssh/known_hosts && \
+              apk add --no-cache curl bash tar python3 openssl kubectl && \
+              curl -sL https://talos.dev/install | sh && \
               if [ ! -f /config/.bootstrapped ]; then
                 echo "Running bootstrap script..."
                 export IP={{ .Values.loadBalancerIP }} && \
@@ -114,6 +97,7 @@ spec:
                   if grep -q "/controlplane.yaml" /config/server.log; then \
                     echo "Controlplane config fetched! Bootstrapping..." && \
                     bootstrap_ip=$(grep "/controlplane.yaml" /config/server.log | head -n1 | awk '{print $1}') && \
+                    echo "Bootstrap IP: $bootstrap_ip" && \
                     talosctl --talosconfig talosconfig config endpoint "$bootstrap_ip" && \
                     talosctl --talosconfig talosconfig config node "$bootstrap_ip" && \
                     sleep 10 && \
@@ -137,13 +121,6 @@ spec:
                 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml && \
                 kubectl wait deployment argocd-server -n argocd --for=condition=Available=True --timeout=180s && \
                 kubectl wait pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --for=condition=Ready --timeout=180s && \
-                echo "Logging in to Argo CD..." && \
-                pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) && \
-                argocd login argocd-server.argocd.svc.cluster.local --username admin --password "$pw" --insecure && \
-                echo "Adding Git repo..." && \
-                argocd repo add git@github.com:ulrikof/DCST2900-K8s.git \
-                  --ssh-private-key-path ~/.ssh/id_rsa \
-                  --name dcst2900-repo && \
                 echo "Applying App of Apps..." && \
                 kubectl apply -f /patches/app-of-apps.yaml && \
                 echo "Bootstrap complete."
@@ -157,8 +134,6 @@ spec:
               mountPath: /config
             - name: patch-volume
               mountPath: /patches
-            - name: ssh-key
-              mountPath: /ssh-key
         - name: talos-http-server
           image: python:3
           command: ["/bin/sh", "-c"]
@@ -185,6 +160,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: talos-config
+  namespace: k8s-in-k8s
   labels:
     app: talos-config
 spec:
