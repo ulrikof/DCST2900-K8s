@@ -10,6 +10,10 @@ while [[ $# -gt 0 ]]; do
       TALOS_IP="$2"
       shift; shift
       ;;
+    --namespace)
+      NAMESPACE="$2"
+      shift; shift
+      ;;
     --worker-file)
       WORKER_FILE="$2"
       shift; shift
@@ -25,19 +29,27 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ -z "$TALOS_IP" ]]; then
-  echo "NOT IP DNS RESOLUTION TALK TO ULRIK Usage: ./patch-image.sh --ip <talos-config-ip> [--worker-file <path>] [--controlplane-file <path>]"
+# Ensure either IP or Namespace is provided
+if [[ -z "$TALOS_IP" && -z "$NAMESPACE" ]]; then
+  echo "Usage: ./patch-image.sh [--ip <talos-config-ip> | --namespace <ns>] [--worker-file <path>] [--controlplane-file <path>]"
   exit 1
 fi
 
-# Construct the image URLs
-asdf=".$TALOS_IP.svc.cluster.local"
-BASE_URL="https://factory.talos.dev/?arch=amd64&cmdline=talos.config%3Dhttp%3A%2F%2F${asdf}%2F"
+# Construct the base URL
+if [[ -n "$TALOS_IP" ]]; then
+  CONFIG_URL="http://$TALOS_IP/"
+elif [[ -n "$NAMESPACE" ]]; then
+  CONFIG_URL="http://talos-config.${NAMESPACE}.svc.cluster.local/"
+fi
 
+# Build full BASE_URL
+ENCODED_CONFIG_URL=$(python3 -c "import urllib.parse; print(urllib.parse.quote('talos.config=' + '$CONFIG_URL'))")
+BASE_URL="https://factory.talos.dev/?arch=amd64&cmdline=${ENCODED_CONFIG_URL}"
 
-# BASE_URL="https://factory.talos.dev/?arch=amd64&cmdline=talos.config%3Dhttp%3A%2F%2F${TALOS_IP}%2F"
+# Add static args
 ARGS="&cmdline-set=true&extensions=-&extensions=siderolabs%2Fiscsi-tools&extensions=siderolabs%2Futil-linux-tools&platform=metal&target=metal&version=1.9.5"
 
+# Fetch image URLs
 CONTROLPLANE_IMAGE=$(curl -s "${BASE_URL}controlplane.yaml${ARGS}" | grep -o 'https://[^"]*\.qcow2' | head -n1)
 WORKER_IMAGE=$(curl -s "${BASE_URL}worker.yaml${ARGS}" | grep -o 'https://[^"]*\.qcow2' | head -n1)
 
