@@ -16,6 +16,12 @@ spec:
           - ../../../ArgoCD/apps/orgs/south/values.yaml
     - repoURL: git@github.com:ulrikof/DCST2900-K8s.git
       targetRevision: main
+      path: ArgoCD/charts/org-users
+      helm:
+        valueFiles:
+          - ../../../ArgoCD/apps/orgs/south/values.yaml
+    - repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+      targetRevision: main
       path: ArgoCD/charts/busybox
       helm:
         valueFiles:
