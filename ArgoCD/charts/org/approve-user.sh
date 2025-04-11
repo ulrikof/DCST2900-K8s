@@ -1,48 +1,45 @@
 #!/bin/bash
-
 set -euo pipefail
 
-# Inputs
+# 🛠️ Troubleshooting output
+troubleshoot() { echo "[🛠️  $1]"; }
+
 user=""
-namespace=""
 kubeconfig=""
 
 usage() {
-  echo "Usage: $0 --user <username> --namespace <ns> --kubeconfig <path>"
+  echo "Usage: $0 --user <username> --kubeconfig <path>"
   exit 1
 }
 
 # Parse args
 while [[ $# -gt 0 ]]; do
-  case $1 in
-    --user)
-      user="$2"; shift 2 ;;
-    --namespace)
-      namespace="$2"; shift 2 ;;
-    --kubeconfig)
-      kubeconfig="$2"; shift 2 ;;
-    *)
-      echo "Unknown option: $1"; usage ;;
+  case "$1" in
+    --user) user="$2"; shift 2 ;;
+    --kubeconfig) kubeconfig="$2"; shift 2 ;;
+    *) echo "Unknown option: $1"; usage ;;
   esac
 done
 
-[[ -z "$user" || -z "$namespace" || -z "$kubeconfig" ]] && usage
+[[ -z "$user" || -z "$kubeconfig" ]] && usage
 
-# Approve the CSR
-echo "[+] Approving CSR for user: $user"
-kubectl --kubeconfig "$kubeconfig" certificate approve "$user-csr"
+csr_name="${user}-csr"
+home_kube="/home/$user/.kube"
+client_crt_path="$home_kube/client.crt"
 
-# Wait for cert to appear
-echo "[~] Waiting for certificate to be signed..."
-while [[ -z $(kubectl --kubeconfig "$kubeconfig" get csr "$user-csr" -o jsonpath='{.status.certificate}') ]]; do
+troubleshoot "Approving CSR: $csr_name"
+kubectl --kubeconfig="$kubeconfig" certificate approve "$csr_name"
+
+troubleshoot "Waiting for signed certificate from API server..."
+while [[ -z $(kubectl --kubeconfig="$kubeconfig" get csr "$csr_name" -o jsonpath='{.status.certificate}') ]]; do
   sleep 1
 done
 
-# Copy signed cert to user's kube dir
-user_kube_dir="/home/$user/.kube"
-sudo mkdir -p "$user_kube_dir"
-kubectl --kubeconfig "$kubeconfig" get csr "$user-csr" -o jsonpath='{.status.certificate}' \
-  | base64 -d | sudo tee "$user_kube_dir/client.crt" > /dev/null
+troubleshoot "Fetching signed certificate and writing to: $client_crt_path"
+kubectl --kubeconfig="$kubeconfig" get csr "$csr_name" -o jsonpath='{.status.certificate}' \
+  | base64 -d | sudo tee "$client_crt_path" > /dev/null
 
-sudo chown "$user:$user" "$user_kube_dir/client.crt"
-echo "# Signed certificate installed for $user"
+sudo chown "$user:$user" "$client_crt_path"
+
+troubleshoot "✅ Certificate installed for user '$user'"
+echo "[✓] User '$user' is now fully configured and able to access the cluster."
