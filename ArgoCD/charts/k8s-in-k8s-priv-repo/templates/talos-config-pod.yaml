@@ -140,6 +140,7 @@ spec:
                 kubectl wait pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --for=condition=Ready --timeout=180s && \
                 echo "Logging in to Argo CD..." && \
                 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}' && \
+                sleep 30 && \
                 port=$(kubectl -n argocd get svc argocd-server -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}') && \
                 node_ip=$(kubectl get nodes -o wide | grep control-plane | head -n1 | awk '{print $6}') && \
                 pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) && \
