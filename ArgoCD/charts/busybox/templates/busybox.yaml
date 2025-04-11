@@ -22,7 +22,6 @@ metadata:
   namespace: {{ $.Values.org.ns }}
 spec:
   selector:
-    # pod.kubernetes.io/name: {{ $.Values.org }}-{{ . }}
     app: {{ $.Values.org.name }}-{{ . }}
   ports:
     - protocol: TCP
