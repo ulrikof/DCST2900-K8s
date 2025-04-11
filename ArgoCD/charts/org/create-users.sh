@@ -73,7 +73,7 @@ csr_b64=$(base64 < "$user.csr" | tr -d '\n')
 
 # Save user info as a YAML file
 cat <<EOF > $user.yaml
-name: $user
+userName: $user
 csr: |
   $csr_b64
 EOF
@@ -86,7 +86,7 @@ echo "# Paste the following into your org values.yaml under:"
 echo "  org.users.${role}Users:"
 echo ""
 echo "---------------------------- COPY BELOW -----------------------------"
-cat $user.yaml | sed 's/^/    /'
+cat $user.yaml | sed 's/^/      /'
 echo "---------------------------- COPY ABOVE -----------------------------"
 echo ""
 echo "# Done. CSR and key stored in: $user_dir"
