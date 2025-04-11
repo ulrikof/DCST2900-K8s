@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ $.Values.org }}-{{ . }}
-  namespace: {{ $.Values.ns }}
+  name: {{ $.Values.org.name }}-{{ . }}
+  namespace: {{ $.Values.org.ns }}
   labels:
-    app: {{ $.Values.org }}-{{ . }}
-    org: {{ $.Values.org }}
+    app: {{ $.Values.org.name }}-{{ . }}
+    org: {{ $.Values.org.name }}
 spec:
   containers:
     - image: busybox
@@ -18,12 +18,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $.Values.org }}-{{ . }}-svc
-  namespace: {{ $.Values.ns }}
+  name: {{ $.Values.org.name }}-{{ . }}-svc
+  namespace: {{ $.Values.org.ns }}
 spec:
   selector:
     # pod.kubernetes.io/name: {{ $.Values.org }}-{{ . }}
-    app: {{ $.Values.org }}-{{ . }}
+    app: {{ $.Values.org.name }}-{{ . }}
   ports:
     - protocol: TCP
       port: 80

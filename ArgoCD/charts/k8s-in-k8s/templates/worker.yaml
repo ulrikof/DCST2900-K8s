@@ -27,7 +27,7 @@ spec:
                   storage: 10Gi
             source:
               http:
-                url: {{ .Values.workerImage }}
+                url: {{ .Values.vCluster.images.workerImage }}
       template:
         metadata:
           labels:

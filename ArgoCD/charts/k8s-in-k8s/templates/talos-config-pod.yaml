@@ -10,7 +10,7 @@ data:
   all-patch.yaml: |
     machine:
       certSANs:
-        - {{ .Values.loadBalancerIP }}
+        - {{ .Values.vCluster.loadBalancerIP }}
       kubelet:
         extraArgs:
           rotate-server-certificates: true
@@ -85,7 +85,7 @@ spec:
               curl -sL https://talos.dev/install | sh && \
               if [ ! -f /config/.bootstrapped ]; then
                 echo "Running bootstrap script..."
-                export IP={{ .Values.loadBalancerIP }} && \
+                export IP={{ .Values.vCluster.loadBalancerIP }} && \
                 mkdir -p /config && cd /config && \
                 cp /patches/*.yaml . && \
                 talosctl gen config K8s-in-K8s https://$IP:6443 \
