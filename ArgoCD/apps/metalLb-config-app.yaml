@@ -20,3 +20,5 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - PruneLast=true
+
+# move to addons at some point
