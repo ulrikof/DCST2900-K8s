@@ -4,10 +4,10 @@ metadata:
   creationTimestamp: null
   name: virtual-cluster-worker-scaler
 spec:
-  maxReplicas: {{ .Values.hpa.maxWorkers }}
-  minReplicas: {{ .Values.hpa.minWorkers }}
+  maxReplicas: {{ .Values.vCluster.hpa.maxWorkers }}
+  minReplicas: {{ .Values.vCluster.hpa.minWorkers }}
   scaleTargetRef:
     apiVersion: pool.kubevirt.io/v1alpha1
     kind: VirtualMachinePool
     name: talos-worker
-  targetCPUUtilizationPercentage: {{ .Values.hpa.targetCPU }}
+  targetCPUUtilizationPercentage: {{ .Values.vCluster.hpa.targetCPU }}
