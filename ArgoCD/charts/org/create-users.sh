@@ -2,15 +2,28 @@
 
 set -euo pipefail
 
+# 💬 Debug logging function
+troubleshoot() {
+  echo "[🛠️  troubleshoot] $1"
+}
+
 # Required args
 user=""
 org_name=""
 org_ns=""
 role=""
-
+talosconfig=""
 
 usage() {
-  echo "Usage: $0 --user <username> --org <org-name> --namespace <org-namespace> --role <admin|viewer>"
+  if [[ -z $talosconfig ]]; then
+  echo "[!] talosconfig is not set — please use --talosconfig flag"
+  echo "[!] You can use \$TALOSCONFIG if this is exported in your ~/.bashrc"
+
+  fi
+  if [[ "$role" != "admin" && "$role" != "viewer" ]]; then
+  echo "[!] Role must be 'admin' or 'viewer'"
+  fi
+  echo "Usage: $0 --user <username> --org <org-name> --namespace <org-namespace> --role <admin|viewer> --talosconfig <\$TALOSCONFIG>"
   exit 1
 }
 
@@ -25,33 +38,39 @@ while [[ $# -gt 0 ]]; do
       org_ns="$2"; shift 2 ;;
     --role)
       role="$2"; shift 2 ;;
+    --talosconfig)
+      talosconfig="$2"; shift 2 ;;
     *)
       echo "Unknown option: $1"; usage ;;
   esac
 done
 
 # Validate args
-if [[ -z "$user" || -z "$org_name" || -z "$org_ns" || -z "$role" ]]; then
+if [[ -z "$user" || -z "$org_name" || -z "$org_ns" || -z "$role" ||  -z "$talosconfig" ]]; then
   usage
 fi
 
 if [[ "$role" != "admin" && "$role" != "viewer" ]]; then
-  echo "[!] Role must be 'admin' or 'viewer'"
-  exit 1
+  usage
 fi
+
+troubleshoot "Starting user creation for '$user' in namespace '$org_ns' with role '$role'"
 
 # Create the Linux user if it doesn't exist
 if id "$user" &>/dev/null; then
+  troubleshoot "Linux user '$user' already exists, skipping useradd"
   echo "[!] Linux user '$user' already exists, skipping creation."
 else
   echo "[+] Creating Linux user '$user'"
   useradd -m "$user"
   echo "$user:changeme" | chpasswd
-  chage -d 0 "$user"  # Force password change on first login
+  chage -d 0 "$user"
+  troubleshoot "Linux user '$user' created and password set"
 fi
 
 # Optional: copy SSH authorized_keys from current user
 if [[ -f "/home/$USER/.ssh/authorized_keys" ]]; then
+  troubleshoot "Copying SSH keys from $USER to $user"
   mkdir -p /home/$user/.ssh
   cp /home/$USER/.ssh/authorized_keys /home/$user/.ssh/authorized_keys
   chown -R $user:$user /home/$user/.ssh
@@ -64,9 +83,12 @@ fi
 user_dir="generated-users/$user"
 mkdir -p "$user_dir"
 cd "$user_dir"
+troubleshoot "Working in $user_dir"
 
 # Generate private key & CSR
+troubleshoot "Generating TLS private key"
 openssl genrsa -out "$user.key" 2048
+troubleshoot "Creating CSR for CN=$user, O=$org_name-$role"
 openssl req -new -key "$user.key" -out "$user.csr" -subj "/CN=$user/O=$org_name-$role"
 
 # Base64 encode the CSR
@@ -78,21 +100,24 @@ cat <<EOF > $user.yaml
   csr: |
     $csr_b64
 EOF
+troubleshoot "CSR base64 written to $user.yaml"
 
 # Copy certs and kubeconfig to user home
 home_kube_dir="/home/$user/.kube"
 mkdir -p "$home_kube_dir"
 
-# Simulate CA cert (replace this path if using real CA cert)
+troubleshoot "Copying CA cert"
 cp "/etc/kubernetes/pki/ca.crt" "$home_kube_dir/ca.crt" 2>/dev/null || touch "$home_kube_dir/ca.crt"
 
-# Copy cert/key to user kube dir
+troubleshoot "Placing client key in $home_kube_dir"
 cp "$user.key" "$home_kube_dir/client.key"
-touch "$home_kube_dir/client.crt"  # Placeholder — Argo will approve and install this
+touch "$home_kube_dir/client.crt"  # Placeholder — will be replaced once CSR is approved
 
 # Create kubeconfig
-server_ip=$(talosctl --talosconfig $talosconfig_path get info \
-  | awk '/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/ { print $1 }')
+troubleshoot "Fetching API server IP from Talos"
+server_ip=$(talosctl --talosconfig $talosconfig get info | awk '/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/ { print $1 }')
+troubleshoot "Using server IP: $server_ip"
+
 cat <<EOF > "$home_kube_dir/config"
 apiVersion: v1
 kind: Config
@@ -115,13 +140,17 @@ users:
     client-key: $home_kube_dir/client.key
 EOF
 
+troubleshoot "Kubeconfig written to $home_kube_dir/config"
+
 # Fix permissions
 chown -R $user:$user "/home/$user/.kube"
 chmod 600 /home/$user/.kube/*
 
 # Set env var for login shells
-grep -qxF "export KUBECONFIG=/home/$user/.kube/config" /home/$user/.bashrc || \
+if ! grep -q "KUBECONFIG=/home/$user/.kube/config" /home/$user/.bashrc; then
   echo "export KUBECONFIG=/home/$user/.kube/config" >> /home/$user/.bashrc
+  troubleshoot "KUBECONFIG export added to /home/$user/.bashrc"
+fi
 
 chown $user:$user /home/$user/.bashrc
 
