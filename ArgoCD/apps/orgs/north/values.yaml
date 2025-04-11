@@ -1,8 +1,11 @@
 org:
   name: north
   ns: north-org
-
-
+  users:
+    adminUsers:
+      - alice
+    viewerUsers:
+      - bob
 
 busyboxes:
   - busybox-1
