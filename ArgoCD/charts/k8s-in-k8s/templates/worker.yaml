@@ -51,6 +51,9 @@ spec:
             resources:
               requests:
                 memory: 20Gi
+                cpu: "5000m"
+              limits:
+                cpu: "5000m"
             devices:
               disks:
                 - name: disk0
