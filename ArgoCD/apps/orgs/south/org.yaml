@@ -1,6 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+# We should change name to $org-app, but not now since it might break something
   name: south-org
   namespace: argocd
   finalizers:
