@@ -10,7 +10,7 @@
 #   source:
 #     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
 #     targetRevision: main
-#     path: ArgoCD/charts/k8s-in-k8s
+#     path: ArgoCD/charts/k8s-in-k8s-priv-repo
 #     helm:
 #       values: |
 #         loadBalancerIP: 10.100.39.110
