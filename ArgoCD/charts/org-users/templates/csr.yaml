@@ -2,7 +2,7 @@
 apiVersion: certificates.k8s.io/v1
 kind: CertificateSigningRequest
 metadata:
-  name: {{ .name }}-csr
+  name: {{ .userName }}-csr
 spec:
   groups:
     - system:authenticated
@@ -17,7 +17,7 @@ spec:
 apiVersion: certificates.k8s.io/v1
 kind: CertificateSigningRequest
 metadata:
-  name: {{ .name }}-csr
+  name: {{ .userName }}-csr
 spec:
   groups:
     - system:authenticated
