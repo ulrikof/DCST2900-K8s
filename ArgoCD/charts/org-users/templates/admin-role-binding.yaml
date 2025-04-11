@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: namespace-admin-binding-{{ . }}
+  name: namespace-admin-binding-{{ .userName }}
   namespace: {{ $.Values.org.ns }}
 subjects:
   - kind: User
