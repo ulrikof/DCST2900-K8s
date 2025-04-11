@@ -44,7 +44,6 @@ data:
       project: default
       source:
         repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-        targetRevision: network
         path: ArgoCD/apps/addons
         directory:
           recurse: true
