@@ -11,8 +11,8 @@ busyboxes:
 # k8s-in-k8s:
 # cluster: # INDENT PROPERLY LATER BUT LINT ALSO
 loadBalancerIP: 10.100.39.110 # "talos-controlplane-"
-controlPlaneImage: https://factory.talos.dev/image/bcf0f9815b2d581bdc3a3afbdef95dbae04e8baa67a1c6279e9196651795b28f/v1.9.5/metal-amd64.qcow2 # must fix
-workerImage: https://factory.talos.dev/image/425de75eb4d43dbca3af4c0d959f9502646beb7026d17bb323a2e1611183c858/v1.9.5/metal-amd64.qcow2 # must fix
+controlPlaneImage: https://factory.talos.dev/image/fd27ba1a73748ee0b95de46be7c816d4e0059847ef442665f023018023511565/v1.9.5/metal-amd64.qcow2
+workerImage: https://factory.talos.dev/image/cf02b29108ea21f8ee457d275abe7fc5d5b16e70766d819070582e6bf20322ec/v1.9.5/metal-amd64.qcow2
 hpa:
   targetCPU: 90
   minWorkers: 3 
