@@ -1,0 +1,67 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: {{ .Values.ubuntuVM.name }}
+  labels:
+    kubevirt.io/os: linux
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: {{ .Values.ubuntuVM.name }}-dv
+      spec:
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: {{ .Values.ubuntuVM.storageSize }}
+        source:
+          http:
+            url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: {{ .Values.ubuntuVM.name }}
+    spec:
+      domain:
+        cpu:
+          cores: {{ .Values.ubuntuVM.cpuCores }}
+        resources:
+          requests:
+            memory: {{ .Values.ubuntuVM.memory }}
+        devices:
+          disks:
+            - name: disk0
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              cdrom:
+                bus: sata
+                readonly: true
+      volumes:
+        - name: disk0
+          dataVolume:
+            name: {{ .Values.ubuntuVM.name }}-dv
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              hostname: {{ .Values.ubuntuVM.hostname }}
+              ssh_pwauth: true
+              disable_root: false
+              ssh_authorized_keys:
+                - {{ .Values.ubuntuVM.sshKey }}
+
+              package_update: true
+              packages:
+                - snapd
+                - curl
+
+              runcmd:
+                - [ sh, -c, "sleep 10" ]
+                - [ sh, -c, "snap install kubectl --classic" ]
+                - [ sh, -c, "curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" ]
+                - [ sh, -c, "install -m 555 argocd-linux-amd64 /usr/local/bin/argocd" ]
+                - [ sh, -c, "rm argocd-linux-amd64" ]
