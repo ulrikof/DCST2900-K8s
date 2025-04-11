@@ -71,3 +71,8 @@ argocd login $ip --username admin --password $pw --insecure
 # configmap/argocd-cm patched
 
 # we should probably change password at some point
+
+
+kubectl create secret generic git-argo-key \
+  --from-file=git-argo-key=$HOME/.ssh/git-argo-key \
+  -n argocds
