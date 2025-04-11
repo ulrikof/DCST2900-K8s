@@ -15,8 +15,9 @@ spec:
       values: |
         vCluster:
           loadBalancerIP: 10.100.39.120
-          controlPlaneImage: https://factory.talos.dev/image/38a5e9b9cfbaeb1054642d93fe3db18befe3e3e1d85a8a96524cdb9acb0643a6/v1.9.5/metal-amd64.qcow2
-          workerImage: https://factory.talos.dev/image/74a619d5d808973b6fc5f0d20e34ca3c9994720cc5094a05b087dacf8574649a/v1.9.5/metal-amd64.qcow2
+          images:
+            controlPlaneImage: https://factory.talos.dev/image/38a5e9b9cfbaeb1054642d93fe3db18befe3e3e1d85a8a96524cdb9acb0643a6/v1.9.5/metal-amd64.qcow2
+            workerImage: https://factory.talos.dev/image/74a619d5d808973b6fc5f0d20e34ca3c9994720cc5094a05b087dacf8574649a/v1.9.5/metal-amd64.qcow2
           hpa:
             targetCPU: 90
             minWorkers: 3 
