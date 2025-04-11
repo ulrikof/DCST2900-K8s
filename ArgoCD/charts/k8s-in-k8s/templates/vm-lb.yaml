@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.ubuntuVM.name }}-ssh
+  name: {{ .Values.vCluster.ubuntuVM.name }}-ssh
 spec:
   type: LoadBalancer
-  loadBalancerIP: {{ .Values.ubuntuVM.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.vCluster.ubuntuVM.loadBalancerIP }}
   selector:
-    kubevirt.io/domain: {{ .Values.ubuntuVM.name }}
+    kubevirt.io/domain: {{ .Values.vCluster.ubuntuVM.name }}
   ports:
     - name: ssh
       port: 22

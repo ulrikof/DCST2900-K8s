@@ -7,7 +7,7 @@ spec:
   selector:
     app: talos-control-plane
   type: LoadBalancer
-  loadBalancerIP: {{ .Values.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.vCluster.loadBalancerIP }}
   ports:
     - name: kube-apiserver
       port: 6443
