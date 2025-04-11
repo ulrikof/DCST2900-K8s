@@ -140,7 +140,6 @@ spec:
                 kubectl wait pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --for=condition=Ready --timeout=180s && \
                 echo "Logging in to Argo CD..." && \
                 pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) && \
-                kubectl port-forward svc/argocd-server -n argocd 8080:443 >/dev/null 2>&1 & \
                 argocd login argocd-server.argocd.svc.cluster.local --username admin --password "$pw" --insecure && \
                 echo "Adding Git repo..." && \
                 argocd repo add git@github.com:ulrikof/DCST2900-K8s.git \
