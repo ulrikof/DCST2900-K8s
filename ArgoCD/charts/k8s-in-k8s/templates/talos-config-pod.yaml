@@ -97,7 +97,7 @@ spec:
               curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && \
               chmod +x /usr/local/bin/argocd && \
               mkdir -p ~/.ssh && \
-              cp /root/.ssh/git-argo-key ~/.ssh/id_rsa && \
+              cp /ssh-key/git-argo-key ~/.ssh/id_rsa && \
               chmod 600 ~/.ssh/id_rsa && \
               ssh-keyscan github.com >> ~/.ssh/known_hosts && \
               if [ ! -f /config/.bootstrapped ]; then
@@ -158,7 +158,7 @@ spec:
             - name: patch-volume
               mountPath: /patches
             - name: ssh-key
-              mountPath: /root/.ssh
+              mountPath: /ssh-key
         - name: talos-http-server
           image: python:3
           command: ["/bin/sh", "-c"]
