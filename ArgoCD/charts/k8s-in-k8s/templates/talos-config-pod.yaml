@@ -60,12 +60,11 @@ data:
             createdby: argocd
         syncOptions:
           - CreateNamespace=true
-
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: talos-config-server
-  namespace: k8s-in-k8s
 spec:
   selector:
     matchLabels:
@@ -186,7 +185,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: talos-config
-  namespace: k8s-in-k8s
   labels:
     app: talos-config
 spec:
