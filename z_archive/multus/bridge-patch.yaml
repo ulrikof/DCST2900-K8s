@@ -1,0 +1,10 @@
+machine:
+  network:
+    interfaces:
+      - interface: br0
+        dhcp: true
+        bridge:
+          interfaces:
+            - eno1
+          stp:
+            enabled: true
