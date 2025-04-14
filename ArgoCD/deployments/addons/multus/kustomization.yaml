@@ -9,4 +9,4 @@ patches:
       kind: DaemonSet
       name: kube-multus-ds
       namespace: kube-system
-    path: patch-ds-patch.yaml
+    path: multus-ds-patch.yaml
