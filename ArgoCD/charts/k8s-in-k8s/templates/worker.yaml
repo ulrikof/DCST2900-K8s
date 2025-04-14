@@ -12,6 +12,8 @@ spec:
       labels:
         kubevirt.io/vmpool: talos-worker
         kubevirt.io/os: talos
+      annotations:
+        k8s.v1.cni.cncf.io/networks: default/lan-bridge
     spec:
       runStrategy: Always
       dataVolumeTemplates:
@@ -61,7 +63,7 @@ spec:
                     bus: virtio
               interfaces:
                 - name: default
-                  bridge: {}   
+                  bridge: {}
                 - name: bridged
                   bridge: {}
           networks:
@@ -69,7 +71,7 @@ spec:
               pod: {}
             - name: bridged
               multus:
-                networkName: lan-bridge  
+                networkName: default/lan-bridge
           volumes:
             - name: disk0
               dataVolume:
