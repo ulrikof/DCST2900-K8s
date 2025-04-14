@@ -59,6 +59,17 @@ spec:
                 - name: disk0
                   disk:
                     bus: virtio
+              interfaces:
+                - name: default
+                  bridge: {}   
+                - name: bridged
+                  bridge: {}
+          networks:
+            - name: default
+              pod: {}
+            - name: bridged
+              multus:
+                networkName: lan-bridge  
           volumes:
             - name: disk0
               dataVolume:
