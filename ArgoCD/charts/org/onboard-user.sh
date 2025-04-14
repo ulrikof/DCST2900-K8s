@@ -37,7 +37,7 @@ APP_NAME="$org-org" #THIS IS ONLY IF FOLLOWING CONVENTION
 
 #### Step 1: Run create-user.sh
 troubleshoot "Running create-user.sh..."
-sudo ./create-user.sh --user "$user" --namespace "$namespace" --role "$role" --kubeconfig "$kubeconfig"
+./create-user.sh --user "$user" --namespace "$namespace" --role "$role" --kubeconfig "$kubeconfig"
 
 #### Step 2: Inject CSR into values.yaml
 yaml_snippet="generated-users/$user/$user.yaml"
@@ -53,12 +53,16 @@ troubleshoot "Injecting CSR into $VALUES_FILE under org.users.${role}Users..."
 # Ensure structure exists and append new user
 # Step 1: Make sure it's at least a list
 tmpfile=$(mktemp)
+troubleshoot "1"
 yq e ".org.users.${role}Users = (.org.users.${role}Users // [])" "$VALUES_FILE" > "$tmpfile"
+troubleshoot "2"
 mv "$tmpfile" "$VALUES_FILE"
 
 # Step 2: Append the CSR block
 tmpfile=$(mktemp)
+troubleshoot "3"
 yq e ".org.users.${role}Users += load(\"$yaml_snippet\")" "$VALUES_FILE" > "$tmpfile"
+troubleshoot "4"
 mv "$tmpfile" "$VALUES_FILE"
 
 troubleshoot "✅ Successfully injected CSR using safe file replacement"
@@ -84,6 +88,8 @@ git push origin main
 #### Step 4: Sync ArgoCD app
 troubleshoot "Triggering ArgoCD sync for $APP_NAME..."
 argocd app sync "$APP_NAME"
+argocd app sync app-of-apps
+
 
 #### Step 5: Wait for ArgoCD sync
 troubleshoot "Waiting for ArgoCD app '$APP_NAME' to be synced..."

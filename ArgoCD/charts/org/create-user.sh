@@ -28,7 +28,6 @@ done
 
 [[ -z "$user" || -z "$namespace" || -z "$role" || -z "$kubeconfig" ]] && usage
 
-# Validate role
 if [[ "$role" != "admin" && "$role" != "viewer" ]]; then
   echo "[!] Role must be 'admin' or 'viewer'"
   exit 1
@@ -39,57 +38,59 @@ if id "$user" &>/dev/null; then
   troubleshoot "User '$user' already exists. Skipping useradd."
 else
   troubleshoot "Creating Linux user '$user'"
-  useradd -m "$user"
-  echo "$user:changeme" | chpasswd
-  chage -d 0 "$user"
+  sudo useradd -m "$user"
+  echo "$user:changeme" | sudo chpasswd
+  sudo chage -d 0 "$user"
 fi
 
-# Copy SSH keys from admin
+# Copy SSH keys
 if [[ -f "/home/$USER/.ssh/authorized_keys" ]]; then
-  mkdir -p "/home/$user/.ssh"
-  cp "/home/$USER/.ssh/authorized_keys" "/home/$user/.ssh/authorized_keys"
-  chown -R "$user:$user" "/home/$user/.ssh"
-  chmod 700 "/home/$user/.ssh"
-  chmod 600 "/home/$user/.ssh/authorized_keys"
-  troubleshoot "SSH access copied for '$user'"
+  troubleshoot "Copying SSH authorized_keys to $user"
+  sudo mkdir -p "/home/$user/.ssh"
+  sudo cp "/home/$USER/.ssh/authorized_keys" "/home/$user/.ssh/authorized_keys"
+  sudo chown -R "$user:$user" "/home/$user/.ssh"
+  sudo chmod 700 "/home/$user/.ssh"
+  sudo chmod 600 "/home/$user/.ssh/authorized_keys"
 fi
 
-# Setup dirs
+# Generate key + CSR
 user_dir="generated-users/$user"
 mkdir -p "$user_dir"
 cd "$user_dir"
 
-# Generate TLS key + CSR
+troubleshoot "Generating TLS key and CSR"
 openssl genrsa -out "$user.key" 2048
 openssl req -new -key "$user.key" -out "$user.csr" -subj "/CN=$user/O=$namespace-$role"
 csr_b64=$(base64 < "$user.csr" | tr -d '\n')
 
-# Save for GitOps
 cat <<EOF > "$user.yaml"
 - userName: $user
   csr: |
     $csr_b64
 EOF
 
-# Prepare kubeconfig
+# Setup kubeconfig paths
 home_kube="/home/$user/.kube"
-mkdir -p "$home_kube"
-chown "$user:$user" "$home_kube"
+troubleshoot "Creating .kube directory for $user"
+sudo mkdir -p "$home_kube"
 
-# Extract CA from kubeconfig
+# Extract CA
+troubleshoot "Extracting CA from kubeconfig"
 kubectl config view --kubeconfig="$kubeconfig" --raw --flatten \
   -o jsonpath='{.clusters[0].cluster.certificate-authority-data}' \
-  | base64 -d > "$home_kube/ca.crt"
+  | base64 -d | sudo tee "$home_kube/ca.crt" > /dev/null
 
 # Copy certs
-cp "$user.key" "$home_kube/client.key"
-touch "$home_kube/client.crt"
+sudo cp "$user.key" "$home_kube/client.key"
+sudo touch "$home_kube/client.crt"
 
-# Extract server address
+# Extract API server
 server_url=$(kubectl config view --kubeconfig="$kubeconfig" -o jsonpath='{.clusters[0].cluster.server}')
+troubleshoot "API server is $server_url"
 
 # Build kubeconfig
-cat <<EOF > "$home_kube/config"
+troubleshoot "Building kubeconfig for $user"
+sudo tee "$home_kube/config" > /dev/null <<EOF
 apiVersion: v1
 kind: Config
 clusters:
@@ -111,14 +112,26 @@ users:
     client-key: $home_kube/client.key
 EOF
 
-chown -R "$user:$user" "$home_kube"
-chmod 600 "$home_kube"/*
+sudo chown -R "$user:$user" "$home_kube"
+if sudo test -d "$home_kube"; then
+  troubleshoot "Setting file permissions for $user"
+  sudo find "$home_kube" -type f -exec chmod 600 {} \;
+else
+  troubleshoot "⚠️  Expected kube dir $home_kube not found!"
+fi
 
-# Export config
-grep -qxF "export KUBECONFIG=$home_kube/config" "/home/$user/.bashrc" \
-  || echo "export KUBECONFIG=$home_kube/config" >> "/home/$user/.bashrc"
+# Export KUBECONFIG on login
+export_line="export KUBECONFIG=$home_kube/config"
 
-# Output snippet
+# Check if the line already exists
+if ! sudo grep -qxF "$export_line" "/home/$user/.bashrc"; then
+  troubleshoot "Adding KUBECONFIG export to $user's .bashrc"
+  echo "$export_line" | sudo tee -a "/home/$user/.bashrc" > /dev/null
+  sudo chown "$user:$user" "/home/$user/.bashrc"
+fi
+sudo chown "$user:$user" "/home/$user/.bashrc"
+
+# Done
 echo ""
 echo "✅ User '$user' created. CSR and files are ready."
 echo ""
