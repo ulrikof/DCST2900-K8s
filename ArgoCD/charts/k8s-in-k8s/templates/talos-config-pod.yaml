@@ -23,6 +23,10 @@ data:
         - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
   worker-patch.yaml: |
     machine:
+      network:
+        interfaces:
+          - interface: enp2s0
+            dhcp: true
       kubelet:
         extraMounts:
           - destination: /var/lib/longhorn
