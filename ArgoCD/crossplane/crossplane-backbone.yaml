@@ -1,3 +1,5 @@
+# The ArgoCD Application for crossplane core components themselves
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -23,4 +25,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
 
-# move to addons later
+# move to addons later?
