@@ -2,6 +2,8 @@ apiVersion: network.azure.upbound.io/v1beta1
 kind: VirtualNetwork
 metadata:
   name: vnet-crossplane
+  annotations:
+    argocd.argoproj.io/sync-wave: "7"
 spec:
   forProvider:
     addressSpace:
