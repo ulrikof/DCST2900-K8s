@@ -18,7 +18,8 @@ spec:
     namespace: crossplane-system
   syncPolicy:
     automated:
-      prune: true    
+      prune: true
+      selfHeal: true
     syncOptions:
     - CreateNamespace=true
     retry:
