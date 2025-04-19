@@ -10,8 +10,8 @@ spec:
   credentials:
     source: Secret
     secretRef:
-      namespace: crossplane-system
-      name: azure-secret
+      namespace: external-secrets
+      name: azure-secrets-from-doppler
       key: creds
 
 # THIS IS UNIQUE PER ORG
