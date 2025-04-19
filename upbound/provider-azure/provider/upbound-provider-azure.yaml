@@ -7,8 +7,8 @@ metadata:
   argocd.argoproj.io/sync-wave: "4"
 spec:
   package: xpkg.crossplane.io/crossplane-contrib/provider-azure-network:v1.11.2
-  packagePullPolicy: Always
-  revisionActivationPolicy: Automatic
+  packagePullPolicy: IfNotPresent # Only download the package if it isn’t in the cache.
+  revisionActivationPolicy: Automatic # Otherwise our Provider never gets activate & healthy
   revisionHistoryLimit: 1
 
 # This might be non-unique?
