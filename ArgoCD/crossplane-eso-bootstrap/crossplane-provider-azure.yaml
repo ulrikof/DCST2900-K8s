@@ -15,7 +15,7 @@ spec:
   project: default
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-    targetRevision: HEAD
+    targetRevision: azure
     path: upbound/provider-azure/provider
   destination:
     namespace: default
