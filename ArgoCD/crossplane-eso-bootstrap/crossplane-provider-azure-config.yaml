@@ -5,8 +5,6 @@ kind: Application
 metadata:
   name: crossplane-provider-aws
   namespace: argocd
-  labels:
-    crossplane.jonashackt.io: crossplane
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
