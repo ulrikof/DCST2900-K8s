@@ -1,12 +1,32 @@
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
+# The ArgoCD Application for all Crossplane Azure providers
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: provider-azure-network
-  argocd.argoproj.io/sync-wave: "2"
+  name: crossplane-provider-aws
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
-  package: xpkg.crossplane.io/crossplane-contrib/provider-azure-network:v1.11.2
-  packagePullPolicy: Always
-  revisionActivationPolicy: Automatic
-  revisionHistoryLimit: 1
-
-# This might be non-unique?
+  project: default
+  source:
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    targetRevision: azure
+    path: upbound/provider-azure/provider
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s 
+        factor: 2 
+        maxDuration: 1m
