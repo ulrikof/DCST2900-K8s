@@ -1,17 +1,34 @@
 # The ArgoCD Application for the Azure providers ProviderConfig
 ---
-apiVersion: azure.upbound.io/v1beta1
-kind: ProviderConfig
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: default
+  name: crossplane-provider-aws
+  namespace: argocd
+  labels:
+    crossplane.jonashackt.io: crossplane
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
-  credentials:
-    source: Secret
-    secretRef:
-      namespace: external-secrets
-      name: azure-secrets-from-doppler
-      key: creds
-
-# THIS IS UNIQUE PER ORG
+  project: default
+  source:
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    targetRevision: HEAD
+    path: upbound/provider-azure/config-eso
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s 
+        factor: 2 
+        maxDuration: 1m
