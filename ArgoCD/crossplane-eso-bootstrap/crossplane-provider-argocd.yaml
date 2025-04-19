@@ -20,7 +20,8 @@ spec:
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
-      prune: true    
+      prune: true
+      selfHeal: true
     retry:
       limit: 5
       backoff:
