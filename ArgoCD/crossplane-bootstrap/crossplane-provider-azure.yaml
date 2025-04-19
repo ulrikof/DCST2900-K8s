@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: crossplane-provider-aws
+  name: crossplane-provider-azure
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
