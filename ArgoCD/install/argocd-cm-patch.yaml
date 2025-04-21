@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: argocd-cm
 data:
+  # Set timeout reconciliation for Crossplane resources (see https://docs.crossplane.io/knowledge-base/integrations/argo-cd-crossplane/#set-timeout-reconciliation-for-crossplane-resources)
+  timeout.reconciliation: "1m" # Default is 3m
   # Set Resource Tracking Method (see https://docs.crossplane.io/knowledge-base/integrations/argo-cd-crossplane/#set-resource-tracking-method)
   application.resourceTrackingMethod: annotation
   # Set Resource Exclusion (see https://docs.crossplane.io/knowledge-base/integrations/argo-cd-crossplane/#set-resource-exclusion)
