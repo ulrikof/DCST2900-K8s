@@ -60,3 +60,12 @@ generic azure-secret \
 
 #View the secret:
 kubectl describe secret azure-secret -n crossplane-system
+
+
+# External Secret Operator
+# https://github.com/jonashackt/crossplane-argocd/blob/main/README.md#getting-rid-of-the-manual-k8s-secrets-creation
+
+# Create a secret for the external secret operator, name it according to the ESO you're using
+kubectl create secret generic \
+    doppler-token-auth-api \
+    --from-literal dopplerToken="dp.st.xxxx" # Replace with your own token
