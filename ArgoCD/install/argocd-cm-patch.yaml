@@ -13,7 +13,7 @@ data:
       - ProviderConfigUsage
   # Add an additional local user with apiKey capabilities for provider-argocd
   # see https://github.com/crossplane-contrib/provider-argocd?tab=readme-ov-file#getting-started-and-documentation
-  # accounts.provider-argocd: apiKey
+  # accounts.provider-argocd: apiKey # Only needed for setups with cloud provisioned clusters like Amazon EKS, Azure AKS, GKE, etc.
   # Set health status for Crossplane resources
   # resource.customizations: |
   #   "*.upbound.io/*":
