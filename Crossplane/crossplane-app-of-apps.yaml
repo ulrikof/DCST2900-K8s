@@ -1,20 +1,18 @@
-# The ArgoCD Application for crossplane core components themselves
+# The ArgoCD App of Apps for all Crossplane components
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: crossplane
+  name: crossplane-app-of-apps
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "-1"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://charts.crossplane.io/stable
-    targetRevision: 1.19.1
-    chart: crossplane
+    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    targetRevision: azure
+    path: ArgoCD/apps/crossplane-bootstrap
   destination:
     server: https://kubernetes.default.svc
     namespace: crossplane-system
@@ -23,6 +21,10 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
-
-# move to addons later?
+    - CreateNamespace=true
+    retry:
+      limit: 1
+      backoff:
+        duration: 5s 
+        factor: 2 
+        maxDuration: 1m

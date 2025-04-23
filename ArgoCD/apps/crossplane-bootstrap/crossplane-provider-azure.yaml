@@ -1,14 +1,14 @@
-# The ArgoCD Application for the Azure providers ProviderConfig
+# The ArgoCD Application for all Crossplane Azure providers
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: crossplane-provider-azure-config
+  name: crossplane-provider-azure
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-wave: "4"
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
@@ -16,7 +16,7 @@ spec:
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: azure
-    path: upbound/provider-azure/config-eso
+    path: ArgoCD/deployments/upbound/provider-azure/provider
   destination:
     namespace: default
     server: https://kubernetes.default.svc

@@ -14,7 +14,7 @@ spec:
   source:
     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
     targetRevision: azure
-    path: crossplane # Path to the crossplane Chart.yaml
+    path: ArgoCD/charts/crossplane # Path to the crossplane Chart.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: crossplane-system
