@@ -1,3 +1,5 @@
+# Only needed for setups with cloud provisioned clusters like Amazon EKS, Azure AKS, GKE, etc.
+---
 apiVersion: argocd.crossplane.io/v1alpha1
 kind: ProviderConfig
 metadata:

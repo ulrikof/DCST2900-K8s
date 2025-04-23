@@ -1,3 +1,5 @@
+# Only needed for setups with cloud provisioned clusters like Amazon EKS, Azure AKS, GKE, etc.
+---
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
