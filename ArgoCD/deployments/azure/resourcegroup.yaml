@@ -1,0 +1,8 @@
+apiVersion: azure.crossplane.io/v1
+kind: ResourceGroup
+metadata:
+  name: rg-crossplane
+  annotations:
+    argocd.argoproj.io/sync-wave: "6"
+spec:
+  location: "West Europe"

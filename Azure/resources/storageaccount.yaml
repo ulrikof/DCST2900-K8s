@@ -1,0 +1,13 @@
+apiVersion: storage.azure.crossplane.io/v1alpha3
+kind: Account
+metadata:
+  # Make sure the name is less than 24 characters and contains only lowercase letters and numbers.
+  name: crossplane-storage
+spec:
+  resourceGroupName: rg-crossplane
+  location: WestUS
+  sku:
+    name: Standard_LRS
+  writeConnectionSecretToRef:
+    namespace: default
+    name: crossplane-storage-secret

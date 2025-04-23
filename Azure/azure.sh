@@ -2,6 +2,13 @@
 
 ## Install Crossplane
 
+### Install the Crossplane CLI
+#https://docs.crossplane.io/latest/cli/
+
+#The Crossplane CLI is a single standalone binary with no external dependencies.
+curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/main/install.sh" | sh
+#The script detects your CPU architecture and downloads the latest stable release.
+
 ### Install the Crossplane Helm chart
 #Enable the Crossplane Helm Chart repository:
 helm repo add \
@@ -36,7 +43,7 @@ kind: Provider
 metadata:
   name: provider-azure-network
 spec:
-  package: xpkg.crossplane.io/crossplane-contrib/provider-azure-network:v1.11.2
+  package: xpkg.crossplane.io/crossplane-contrib/provider-azure-network:v1.11.3
 EOF
 
 #Verify the provider installed

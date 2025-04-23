@@ -1,0 +1,10 @@
+apiVersion: network.azure.upbound.io/v1beta1
+kind: VirtualNetwork
+metadata:
+  name: vnet-crossplane
+spec:
+  forProvider:
+    addressSpace:
+      - 10.0.0.0/16
+    location: "West Europe"
+    resourceGroupName: rg-crossplane

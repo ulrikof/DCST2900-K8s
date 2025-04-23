@@ -1,0 +1,12 @@
+apiVersion: network.azure.upbound.io/v1beta1
+kind: VirtualNetwork
+metadata:
+  name: vnet-crossplane
+  annotations:
+    argocd.argoproj.io/sync-wave: "7"
+spec:
+  forProvider:
+    addressSpace:
+      - 10.0.0.0/16
+    location: "West Europe"
+    resourceGroupName: rg-crossplane

@@ -173,10 +173,16 @@ for ip in $ips; do
     fi
 done
 
-sleep 10
-# Add som logic to check if bootstrap is avaiable
-talosctl --talosconfig $talosconfig bootstrap --nodes $controlplane_ip
-talosctl --talosconfig $talosconfig kubeconfig $pwd/$cluster_name/ --nodes $controlplane_ip
+read -p "Do you want to make this the main cluster (update .bashrc)? [y/N]: " confirm
 
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+  echo "Exporting TALOSCONFIG and KUBECONFIG to ~/.bashrc"
+
+  talos_export="export TALOSCONFIG=\"$talosconfig\""
+  kube_export="export KUBECONFIG=\"./$cluster_name/kubeconfig\""
+
+
+talosctl --talosconfig $talosconfig bootstrap --nodes $controlplane_ip
+talosctl --talosconfig $talosconfig kubeconfig ./$cluster_name/ --nodes $controlplane_ip
 
 # kubectl apply -f https://docs.projectcalico.org/manifests/canal.yaml
