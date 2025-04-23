@@ -9,7 +9,7 @@ vCluster: # External IP to assign to the LoadBalancer service via MetalLB. This 
 
   hpa:
     targetCPU: 90
-    minWorkers: 2 
+    minWorkers: 3 
     maxWorkers: 6
 
   ubuntuVM:
