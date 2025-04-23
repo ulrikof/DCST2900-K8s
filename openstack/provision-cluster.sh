@@ -181,14 +181,6 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
   talos_export="export TALOSCONFIG=\"$talosconfig\""
   kube_export="export KUBECONFIG=\"./$cluster_name/kubeconfig\""
 
-  # Prevent duplicate entries
-  grep -qxF "$talos_export" ~/.bashrc || echo "$talos_export" >> ~/.bashrc
-  grep -qxF "$kube_export" ~/.bashrc || echo "$kube_export" >> ~/.bashrc
-
-  echo "✅ ~/.bashrc updated. Run 'source ~/.bashrc' or restart your shell to apply."
-else
-  echo "Skipping .bashrc update."
-fi
 
 talosctl --talosconfig $talosconfig bootstrap --nodes $controlplane_ip
 talosctl --talosconfig $talosconfig kubeconfig ./$cluster_name/ --nodes $controlplane_ip
