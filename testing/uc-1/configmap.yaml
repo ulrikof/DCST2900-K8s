@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+data:
+  index.html: |
+    <html>
+    <head><title>Talos Kubernetes Test</title></head>
+    <body>
+      <h1>Hello, I am a webserver in a container running in a virtual Kubernetes cluster using Talos with kubevirt running in Kubernetes cluster running on Talos!</h1>
+    </body>
+    </html>
