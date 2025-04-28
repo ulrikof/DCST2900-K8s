@@ -2,6 +2,23 @@
 
 ## Install Crossplane
 
+### Manual installation (when not using ArgoCD)
+
+# #Enable the Crossplane Helm Chart repository:
+# helm repo add \
+# crossplane-stable https://charts.crossplane.io/stable
+# helm repo update
+
+# #Install the Crossplane components
+# helm install crossplane \
+# crossplane-stable/crossplane \
+# --namespace crossplane-system \
+# --create-namespace
+
+# #Verify
+# kubectl get pods -n crossplane-system
+
+
 ### Install the Crossplane CLI
 #https://docs.crossplane.io/latest/cli/
 
