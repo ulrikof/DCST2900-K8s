@@ -6,3 +6,5 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   location: "West Europe"
+  providerConfigRef:
+    name: default
