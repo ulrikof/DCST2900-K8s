@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scaling-test
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: scaling-test
+  template:
+    metadata:
+      labels:
+        app: scaling-test
+    spec:
+      containers:
+      - name: cpu-burner
+        image: polinux/stress
+        command: ["stress"]
+        args:
+        - "--cpu"
+        - "1"
+        - "--timeout"
+        - "300s"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
