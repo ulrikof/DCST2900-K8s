@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: DCST2900-Kubernetes
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Aksel
+    family-names: Estensen
+  - given-names: Jonas
+    family-names: Haugland
+  - given-names: Ulrik
+    family-names: Ofstad
+identifiers:
+  - type: url
+    value: 'https://github.com/ulrikof/DCST2900-K8s'
+repository-code: 'https://github.com/ulrikof/DCST2900-K8s'
+repository-artifact: 'https://github.com/ulrikof/DCST2900-K8s'
+abstract: >-
+  This project aims to develop an IaaS platform using
+  K8s-in-K8s
+keywords:
+  - Kubernetes
+license: MIT
+version: 0.1.0
+date-released: '2025-05-20'
