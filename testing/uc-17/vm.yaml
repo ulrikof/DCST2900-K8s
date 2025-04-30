@@ -1,0 +1,51 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: pv-vm
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: pv-vm
+      spec:
+        source:
+          http:
+            url: "https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img"
+        pvc:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1000Mi
+          volumeMode: Filesystem
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: pv-vm
+    spec:
+      domain:
+        devices:
+          disks:
+            - name: dvdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+        resources:
+          requests:
+            memory: 64M
+      terminationGracePeriodSeconds: 0
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: dvdisk
+          dataVolume:
+            name: pv-vm
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userDataBase64: SGkuXG4=
