@@ -19,7 +19,7 @@ virtctl console live-migration-test
 
 # Expose vm ports:
 virtctl expose vmi live-migration-test --name=testvm-ssh --port=22 --type=NodePort
-virtctl expose vmi live-migration-test --name=testvm-http --port=8080 --type=NodePort
+virtctl expose vmi live-migration-test --name=migration --port=8080 --type=NodePort
 
 # Find exposes port:
 
@@ -30,7 +30,7 @@ kubectl get svc testvm-http -o jsonpath='{.spec.ports[0].nodePort}'
 curl 10.100.38.101:31205
 
 # Loop the curl the see if it is interupted by the migrate
-while true; do curl 10.100.38.101:31205; sleep 0.5;  done;
+while true; do curl 10.100.38.101:30686; sleep 0.1;  done;
 
 # Initiate the migrate
 virtctl migrate live-migration-test

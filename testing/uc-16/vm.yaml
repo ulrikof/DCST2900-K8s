@@ -1,0 +1,52 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  labels:
+    kubevirt.io/vm: live-migration-test
+  name: live-migration-test
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: live-migration-disk
+      spec:
+        storage:
+          accessModes:
+            - ReadWriteMany
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: 2Gi
+        source:
+          http:
+            url: https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
+  template:
+    metadata:
+      labels:
+        kubevirt.io/vm: live-migration-test
+    spec:
+      domain:
+        devices:
+          disks:
+            - name: live-migration-disk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+        resources:
+          requests:
+            memory: 64M
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: live-migration-disk
+          dataVolume:
+            name: live-migration-disk
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userDataBase64: SGkuXG4=

@@ -2,12 +2,40 @@
 
 ## Install Crossplane
 
+### Manual installation (when not using ArgoCD)
+
+# #Enable the Crossplane Helm Chart repository:
+# helm repo add \
+# crossplane-stable https://charts.crossplane.io/stable
+# helm repo update
+
+# #Install the Crossplane components
+# helm install crossplane \
+# crossplane-stable/crossplane \
+# --namespace crossplane-system \
+# --create-namespace
+
+# #Verify
+# kubectl get pods -n crossplane-system
+
+
 ### Install the Crossplane CLI
 #https://docs.crossplane.io/latest/cli/
 
 #The Crossplane CLI is a single standalone binary with no external dependencies.
 curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/main/install.sh" | sh
 #The script detects your CPU architecture and downloads the latest stable release.
+
+# ### Install the Azure provider
+# cat <<EOF | kubectl apply -f -
+# apiVersion: pkg.crossplane.io/v1
+# kind: Provider
+# metadata:
+#   name: provider-azure-network
+# spec:
+#   package: xpkg.crossplane.io/crossplane-contrib/provider-azure-network:v1.11.2
+# EOF
+
 
 # Install the Azure CLI
 #Follow the MS Docs: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt#install-azure-cli
@@ -60,6 +88,37 @@ generic azure-secret \
 
 #View the secret:
 kubectl describe secret azure-secret -n crossplane-system
+
+# ### Create a ProviderConfig
+# cat <<EOF | kubectl apply -f -
+# apiVersion: azure.upbound.io/v1beta1
+# metadata:
+#   name: default
+# kind: ProviderConfig
+# spec:
+#   credentials:
+#     source: Secret
+#     secretRef:
+#       namespace: crossplane-system
+#       name: azure-secret
+#       key: creds
+# EOF
+
+
+## Create a managed resource
+#https://docs.crossplane.io/latest/getting-started/provider-azure/#create-a-managed-resource
+cat <<EOF | kubectl create -f -
+apiVersion: network.azure.upbound.io/v1beta1
+kind: VirtualNetwork
+metadata:
+  name: crossplane-quickstart-network
+spec:
+  forProvider:
+    addressSpace:
+      - 10.0.0.0/16
+    location: "West Europe"
+    resourceGroupName: rg-crossplane
+EOF
 
 
 # External Secret Operator

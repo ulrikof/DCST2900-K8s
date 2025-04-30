@@ -71,6 +71,7 @@ argocd login $ip --username admin --password $pw --insecure
 # configmap/argocd-cm patched
 
 # we should probably change password at some point
+#argocd account update-password # To update the password
 
 
 kubectl create secret generic git-argo-key \
