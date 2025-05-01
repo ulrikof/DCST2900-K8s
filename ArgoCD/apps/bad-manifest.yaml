@@ -1,21 +1,10 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata
-  name: bad-deployment
-  labels
-    app: myapp
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-pod
 spec:
-  replicas: two
-  selector:
-    matchLabels:
-      app: myapp
-  template
-    metadata:
-      labels:
-        app: myapp
-    spec:
-      containers:
-        - name: myapp
-          image: nginx
-          ports:
-            - containerPort: eighty
+  containers:
+    - name: nginx
+      image: nginx
+       ports: 
+        - containerPort: "eighty" 
