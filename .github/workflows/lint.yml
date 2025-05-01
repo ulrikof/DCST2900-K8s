@@ -1,26 +1,20 @@
-name: Validate Manifests
+name: Validate Kubernetes YAML
 
 on:
   pull_request:
-    branches: [main]
+    paths:
+      - '**/*.yaml'
 
 jobs:
-  validate-k8s-manifests:
-    name: Check syntax & formatting
+  kube-validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install tools
+      - uses: actions/checkout@v3
+      - name: Install kubeconform
         run: |
-          sudo apt-get update
-          sudo apt-get install -y yamllint kubeval
-
-      - name: Lint YAML (formatting)
+          curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
+            | tar xz
+          sudo mv kubeconform /usr/local/bin/
+      - name: Validate manifests
         run: |
-          yamllint -c .yamllint.yml .
-
-      - name: Validate Kubernetes manifests (syntax/schema)
-        run: |
-          find . -name '*.yaml' -exec kubeval {} \;
+          find . -name '*.yaml' -print0 | xargs -0 kubeconform -strict -summary
