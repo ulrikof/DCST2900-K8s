@@ -58,6 +58,11 @@ metadata:
   labels:
     app: talos-config
 spec:
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "talos"
+      effect: "NoSchedule"
   restartPolicy: Never
   volumes:
     - name: config-volume
