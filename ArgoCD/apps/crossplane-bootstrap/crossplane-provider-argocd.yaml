@@ -13,7 +13,7 @@
 #   project: default
 #   source:
 #     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
-#     targetRevision: azure
+#     targetRevision: main
 #     path: ArgoCD/deployments/crossplane-contrib/provider-argocd/provider
 #   destination:
 #     namespace: default
