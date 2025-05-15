@@ -47,7 +47,7 @@ data:
     spec:
       project: default
       source:
-        repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+        repoURL: https://github.com/ulrikof/DCST2900-K8s.git
         path: ArgoCD/apps/addons
         directory:
           recurse: true
@@ -87,23 +87,16 @@ spec:
         - name: config-volume
           persistentVolumeClaim:
             claimName: config-volume
-        - name: ssh-key
-          secret:
-            secretName: git-argo-key
       containers:
         - name: talos-bootstrap
           image: alpine:latest
           command: ["/bin/sh", "-c"]
           args:
             - |
-              apk add --no-cache curl bash tar python3 openssl kubectl openssh-client && \
+              apk add --no-cache curl bash tar python3 openssl kubectl && \
               curl -sL https://talos.dev/install | sh && \
               curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && \
               chmod +x /usr/local/bin/argocd && \
-              mkdir -p ~/.ssh && \
-              cp /ssh-key/git-argo-key ~/.ssh/id_rsa && \
-              chmod 600 ~/.ssh/id_rsa && \
-              ssh-keyscan github.com >> ~/.ssh/known_hosts && \
               if [ ! -f /config/.bootstrapped ]; then
                 echo "Running bootstrap script..."
                 export IP={{ .Values.vCluster.loadBalancerIP }} && \
@@ -142,17 +135,6 @@ spec:
                 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml && \
                 kubectl wait deployment argocd-server -n argocd --for=condition=Available=True --timeout=180s && \
                 kubectl wait pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --for=condition=Ready --timeout=180s && \
-                echo "Logging in to Argo CD..." && \
-                kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}' && \
-                sleep 30 && \
-                port=$(kubectl -n argocd get svc argocd-server -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}') && \
-                node_ip=$(kubectl get nodes -o wide | grep control-plane | head -n1 | awk '{print $6}') && \
-                pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) && \
-                argocd login "$node_ip:$port" --username admin --password "$pw" --insecure && \
-                echo "Adding Git repo..." && \
-                argocd repo add git@github.com:ulrikof/DCST2900-K8s.git \
-                  --ssh-private-key-path ~/.ssh/id_rsa \
-                  --name dcst2900-repo && \
                 echo "Applying App of Apps..." && \
                 kubectl apply -f /patches/app-of-apps.yaml && \
                 echo "Bootstrap complete."
@@ -166,8 +148,6 @@ spec:
               mountPath: /config
             - name: patch-volume
               mountPath: /patches
-            - name: ssh-key
-              mountPath: /ssh-key
         - name: talos-http-server
           image: python:3
           command: ["/bin/sh", "-c"]
