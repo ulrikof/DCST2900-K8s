@@ -1,0 +1,38 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  labels:
+    kubevirt.io/vm: cirros-dv-vm
+  name: cirros-dv-vm
+spec:
+  runStrategy: Always
+  template:
+    metadata:
+      labels:
+        kubevirt.io/vm: cirros-dv-vm
+    spec:
+      domain:
+        devices:
+          disks:
+            - disk:
+                bus: virtio
+              name: datavolumedisk1
+        resources:
+          requests:
+            memory: 64M
+      volumes:
+        - dataVolume:
+            name: cirros-dv-vm
+          name: datavolumedisk1
+  dataVolumeTemplates:
+    - metadata:
+        name: cirros-dv-vm
+      spec:
+        storage:
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: 2Gi
+        source:
+          http:
+            url: https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img

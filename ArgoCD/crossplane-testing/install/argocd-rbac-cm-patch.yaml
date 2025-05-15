@@ -1,0 +1,11 @@
+# This file is used to patch the argocd-rbac-cm ConfigMap in the argocd namespace.
+# Remember to at this file to the patches section of the kustomization.yaml file.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+data:
+  # For the provider-argocd user we need to add an additional rbac-rule
+  # see https://github.com/crossplane-contrib/provider-argocd?tab=readme-ov-file#create-a-new-argo-cd-user
+  policy.csv: "g, provider-argocd, role:admin" # Only needed for setups with cloud provisioned clusters like Amazon EKS, Azure AKS, GKE, etc.

@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: multus-cni-config
+  namespace: kube-system
+data:
+  cni-conf.json: |
+    {
+      "cniVersion": "0.3.1",
+      "name": "multus-canal",
+      "type": "multus",
+      "kubeconfig": "/etc/cni/net.d/multus.d/multus.kubeconfig",
+
+      "delegates": [
+        {
+          "cniVersion": "0.4.0",
+          "name": "canal-network",
+          "plugins": [
+            {
+              "type": "flannel",
+              "delegate": {
+                "type": "calico",
+                "ipam": { "type": "calico-ipam" },
+                "policy": { "type": "k8s" },
+                "isDefaultGateway": true
+              }
+            },
+            { "type": "portmap", "capabilities": { "portMappings": true } }
+          ]
+        }
+      ]
+    }

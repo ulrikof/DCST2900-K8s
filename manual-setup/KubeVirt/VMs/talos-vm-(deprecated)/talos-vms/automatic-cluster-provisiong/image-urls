@@ -1,0 +1,3 @@
+https://factory.talos.dev/?arch=amd64&cmdline=talos.config%3Dhttp%3A%2F%2Ftalos-config%2Fworker.yaml&cmdline-set=true&extensions=-&extensions=siderolabs%2Fiscsi-tools&extensions=siderolabs%2Futil-linux-tools&platform=metal&target=metal&version=1.9.5
+
+https://factory.talos.dev/?arch=amd64&cmdline=talos.config%3Dhttp%3A%2F%2F10.244.6.12%2Fworker.yaml&cmdline-set=true&extensions=-&extensions=siderolabs%2Fiscsi-tools&extensions=siderolabs%2Futil-linux-tools&platform=metal&target=metal&version=1.9.5

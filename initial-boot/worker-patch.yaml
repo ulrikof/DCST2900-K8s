@@ -1,0 +1,19 @@
+machine:
+  network:
+    interfaces: # Needed for Multus bridged interfaces
+      - interface: br0
+        dhcp: true
+        bridge:
+          interfaces:
+            - eno1
+          stp:
+            enabled: true
+  kubelet:
+    extraMounts: # Needed for Longhorn
+      - destination: /var/lib/longhorn
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw

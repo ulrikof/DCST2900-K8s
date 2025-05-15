@@ -1,0 +1,11 @@
+# Chart for the crossplane core components. Can be managed by RenovateBot to be kept up-to-date.
+---
+apiVersion: v2
+type: application
+name: crossplane-argocd
+version: 0.0.0 # unused
+appVersion: 0.0.0 # unused
+dependencies:
+  - name: crossplane
+    repository: https://charts.crossplane.io/stable
+    version: 1.19.1

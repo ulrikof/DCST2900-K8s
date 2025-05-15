@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: canal
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      # Wipe every init container (= nothing gets written to /etc/cni/net.d)
+      initContainers: []

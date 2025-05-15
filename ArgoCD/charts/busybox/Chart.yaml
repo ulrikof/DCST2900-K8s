@@ -1,0 +1,5 @@
+# manifests/org/Chart.yaml
+apiVersion: v2
+name: org
+version: 0.1.0
+description: Helm chart for multi-tenant org setup

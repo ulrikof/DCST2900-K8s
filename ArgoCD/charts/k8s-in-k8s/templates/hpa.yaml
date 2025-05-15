@@ -1,0 +1,13 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  creationTimestamp: null
+  name: virtual-cluster-worker-scaler
+spec:
+  maxReplicas: {{ .Values.vCluster.hpa.maxWorkers }}
+  minReplicas: {{ .Values.vCluster.hpa.minWorkers }}
+  scaleTargetRef:
+    apiVersion: pool.kubevirt.io/v1alpha1
+    kind: VirtualMachinePool
+    name: talos-worker
+  targetCPUUtilizationPercentage: {{ .Values.vCluster.hpa.targetCPU }}

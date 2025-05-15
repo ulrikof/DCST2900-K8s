@@ -1,0 +1,27 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: allow-tenant-a
+  namespace: tenant-a-1
+spec:
+  selector: all()
+  types:
+  - Ingress
+  ingress:
+  - action: Allow
+    source:
+      namespaceSelector: team == 'tenant-a'
+---
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: allow-tenant-b
+  namespace: tenant-b-1
+spec:
+  selector: all()
+  types:
+  - Ingress
+  ingress:
+  - action: Allow
+    source:
+      namespaceSelector: team == 'tenant-b'

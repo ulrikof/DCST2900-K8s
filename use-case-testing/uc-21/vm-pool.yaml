@@ -1,0 +1,62 @@
+apiVersion: pool.kubevirt.io/v1alpha1
+kind: VirtualMachinePool
+metadata:
+  name: vpa-test-pool
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vpa-test
+  virtualMachineTemplate:
+    metadata:
+      labels:
+        app: vpa-test
+        kubevirt.io/vmpool: vpa-test-pool
+    spec:
+      runStrategy: Always
+      dataVolumeTemplates:
+        - metadata:
+            name: vpa-test-disk
+          spec:
+            source:
+              http:
+                url: "https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img"
+            pvc:
+              accessModes: [ "ReadWriteOnce" ]
+              volumeMode: Filesystem
+              resources:
+                requests:
+                  storage: 1000Mi
+      template:
+        metadata:
+          labels:
+            app: vpa-test
+        spec:
+          terminationGracePeriodSeconds: 0
+          domain:
+            devices:
+              disks:
+                - name: dvdisk
+                  disk:
+                    bus: virtio
+                - name: cloudinitdisk
+                  disk:
+                    bus: virtio
+              interfaces:
+                - name: default
+                  masquerade: {}
+            resources:
+              requests:
+                memory: 64Mi
+                cpu: 64m
+          networks:
+            - name: default
+              pod: {}
+          volumes:
+            - name: dvdisk
+              dataVolume:
+                name: vpa-test-disk
+            - name: cloudinitdisk
+              cloudInitNoCloud:
+                userDataBase64: SGkuXG4=
+              

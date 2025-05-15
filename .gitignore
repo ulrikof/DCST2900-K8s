@@ -1,0 +1,9 @@
+# Don't check in credentials to git
+kubeconfig
+*-creds.conf
+*-credentials.json
+infisical-secret.yaml
+
+# Exclude Helm charts lock and packages
+**/**/Chart.lock
+#**/**/charts

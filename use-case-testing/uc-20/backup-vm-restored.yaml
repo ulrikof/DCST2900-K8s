@@ -1,0 +1,32 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  labels:
+    kubevirt.io/vm: restored-vm
+  name: restored-vm
+spec:
+  runStrategy: Always
+  template:
+    metadata:
+      labels:
+        kubevirt.io/vm: restored-vm
+    spec:
+      domain:
+        devices:
+          disks:
+            - name: backup-disk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+        resources:
+          requests:
+            memory: 64M
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: backup-disk
+          persistentVolumeClaim:
+            claimName: backup-test

@@ -1,0 +1,166 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: talos-patches
+  labels:
+    app: talos-config
+    component: patches
+data:
+  all-patch.yaml: |
+    machine:
+      certSANs:
+        - {{ .Values.loadBalancerIP }}
+      kubelet:
+        extraArgs:
+          rotate-server-certificates: true
+    cluster:
+      network:
+        podSubnets:
+          - 10.245.0.0/16
+      extraManifests:
+        - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml
+        - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  worker-patch.yaml: |
+    machine:
+      kubelet:
+        extraMounts:
+          - destination: /var/lib/longhorn
+            type: bind
+            source: /var/lib/longhorn
+            options:
+              - bind
+              - rshared
+              - rw
+  app-of-apps.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: app-of-apps
+      namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/ulrikof/argocd-test
+        targetRevision: main
+        path: apps
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: talos-config-server
+  labels:
+    app: talos-config
+spec:
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "talos"
+      effect: "NoSchedule"
+  restartPolicy: Never
+  volumes:
+    - name: config-volume
+      emptyDir: {}
+    - name: patch-volume
+      configMap:
+        name: talos-patches
+  containers:
+    - name: talos-bootstrap
+      image: alpine:latest
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          apk add --no-cache curl bash tar python3 openssl kubectl && \
+          curl -sL https://talos.dev/install | sh && \
+          export IP={{ .Values.loadBalancerIP }} && \
+          mkdir -p /config && cd /config && \
+          cp /patches/*.yaml . && \
+          talosctl gen config K8s-in-K8s https://$IP:6443 \
+            --config-patch @all-patch.yaml \
+            --config-patch-worker @worker-patch.yaml && \
+          sleep 10 && \
+          echo "Waiting for first config fetch..." && \
+          while true; do \
+            if grep -q "/controlplane.yaml" /config/server.log; then \
+              echo "Controlplane config fetched! Bootstrapping..." && \
+              bootstrap_ip=$(grep "/controlplane.yaml" /config/server.log | head -n1 | awk '{print $1}') && \
+              echo "Bootstrap IP: $bootstrap_ip" && \
+              talosctl --talosconfig talosconfig config endpoint "$bootstrap_ip" && \
+              talosctl --talosconfig talosconfig config node "$bootstrap_ip" && \
+              sleep 10 && \
+              talosctl bootstrap --talosconfig talosconfig -n "$bootstrap_ip" -e "$bootstrap_ip" && \
+              talosctl kubeconfig . --talosconfig talosconfig -n "$bootstrap_ip" -e "$bootstrap_ip" && \
+              break; \
+            fi; \
+            echo "Still waiting for controlplane fetch..."; \
+            sleep 10; \
+          done && \
+          export KUBECONFIG=/config/kubeconfig && \
+          echo "Waiting for all control plane nodes to be Ready..." && \
+          until [ "$(kubectl get nodes --no-headers 2>/dev/null | grep 'control-plane' | grep ' Ready ' | wc -l)" -eq 3 ]; do \
+            echo "Still waiting on control planes to be Ready..."; \
+            sleep 30; \
+          done && \
+          sleep 60 && \
+          echo "Control plane is fully Ready. Installing Argo CD..." && \
+          kubectl create namespace argocd && \
+          kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml && \
+          echo "Waiting for Argo CD components to be ready..." && \
+          kubectl wait deployment argocd-server -n argocd --for=condition=Available=True --timeout=180s && \
+          kubectl wait pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --for=condition=Ready --timeout=180s && \
+          echo "Applying Argo CD App of Apps..." && \
+          kubectl apply -f /patches/app-of-apps.yaml && \
+          echo "Done" && \
+          tail -f /dev/null
+      workingDir: /config
+      volumeMounts:
+        - name: config-volume
+          mountPath: /config
+        - name: patch-volume
+          mountPath: /patches
+      resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+    - name: talos-http-server
+      image: python:3
+      command: ["/bin/sh", "-c"]
+      args:
+        - python3 -m http.server 80 2>&1 | tee /config/server.log
+      workingDir: /config
+      volumeMounts:
+        - name: config-volume
+          mountPath: /config
+      resources:
+        limits:
+          cpu: 200m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: talos-config
+  namespace: k8s-in-k8s
+  labels:
+    app: talos-config
+spec:
+  selector:
+    app: talos-config
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP

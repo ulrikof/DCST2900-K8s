@@ -1,0 +1,19 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+  namespace: tenant-a-1
+spec:
+  selector: all()
+  types:
+  - Ingress
+---
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+  namespace: tenant-a-2
+spec:
+  selector: all()
+  types:
+  - Ingress

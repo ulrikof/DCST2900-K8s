@@ -1,0 +1,13 @@
+apiVersion: storage.azure.crossplane.io/v1alpha3
+kind: Container
+metadata:
+  name: crossplane-container
+spec:
+  forProvider:
+    accountName: crossplane-storage
+    containerName: crossplane-container
+    resourceGroupName: rg-crossplane
+    location: WestUS
+  writeConnectionSecretToRef:
+    namespace: default
+    name: crossplane-container-secret

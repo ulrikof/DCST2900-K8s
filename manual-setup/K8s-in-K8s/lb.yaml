@@ -1,0 +1,31 @@
+# 1. LoadBalancer Service fronting the Talos control plane
+apiVersion: v1
+kind: Service
+metadata:
+  name: talos-controlplane-lb
+  namespace: test
+spec:
+  selector:
+    app: talos-control-plane
+  ports:
+    - name: kube-apiserver
+      port: 6443
+      targetPort: 6443
+      protocol: TCP
+  type: LoadBalancer
+  loadBalancerIP: 10.100.38.60
+---
+# 2. Headless Service to enable DNS resolution for backend VMs
+apiVersion: v1
+kind: Service
+metadata:
+  name: talos-controlplane-backend
+  namespace: test
+spec:
+  clusterIP: None
+  selector:
+    app: talos-control-plane
+  ports:
+    - name: kube-apiserver
+      port: 6443
+      targetPort: 6443

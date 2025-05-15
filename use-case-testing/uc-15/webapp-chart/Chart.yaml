@@ -1,0 +1,5 @@
+apiVersion: v2
+name: webapp
+description: A Helm chart for a Kubernetes web application
+version: 0.1.0
+appVersion: "1.0" # Action: after change is done to HTML file, update appVersion to something else

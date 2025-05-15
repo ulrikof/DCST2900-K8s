@@ -1,0 +1,15 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: cirros-vm-disk-dv-url
+spec:
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    volumeMode: Filesystem
+    resources:
+      requests:
+        storage: 1000Mi
+  source:
+    http:
+      url: "https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img"

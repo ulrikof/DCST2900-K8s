@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-a-1
+  labels:
+    team: tenant-a
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-b-1
+  labels:
+    team: tenant-b

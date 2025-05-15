@@ -1,0 +1,11 @@
+
+{{- if not ( .Files.Get .Values.html.path ) }}
+{{- fail (printf "Missing HTML file: %s" .Values.html.path ) }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-html
+data:
+  index.html: |
+{{ .Files.Get .Values.html.path | indent 4 }}

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-logger
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: http-logger
+  template:
+    metadata:
+      labels:
+        app: http-logger
+    spec:
+      containers:
+      - name: http-logger
+        image: python:3.9-slim
+        command: ["python", "-u", "-m", "http.server", "8080"]
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-logger-lb
+spec:
+  selector:
+    app: http-logger
+  ports:
+  - protocol: TCP
+    port: 80          
+    targetPort: 8080  
+  type: ClusterIP  

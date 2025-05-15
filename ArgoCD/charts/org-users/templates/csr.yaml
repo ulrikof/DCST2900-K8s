@@ -1,0 +1,29 @@
+{{- range .Values.org.users.adminUsers }}
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: {{ .userName }}-csr
+spec:
+  groups:
+    - system:authenticated
+  request: {{ .csr }}
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+    - client auth
+---
+{{- end }}
+
+{{- range .Values.org.users.viewerUsers }}
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: {{ .userName }}-csr
+spec:
+  groups:
+    - system:authenticated
+  request: {{ .csr }}
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+    - client auth
+---
+{{- end }}

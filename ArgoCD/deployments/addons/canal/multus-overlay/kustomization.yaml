@@ -1,0 +1,4 @@
+resources:
+  - ../local-base
+patchesStrategicMerge:
+  - patch-remove-install-cni.yaml

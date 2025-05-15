@@ -1,0 +1,21 @@
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: restart-argocd
+#   namespace: argocd
+#   annotations:
+#     "argocd.argoproj.io/hook": PostSync
+#     "argocd.argoproj.io/hook-delete-policy": HookSucceeded
+# spec:
+#   template:
+#     spec:
+#       restartPolicy: Never
+#       containers:
+#         - name: restart
+#           image: bitnami/kubectl:latest
+#           command:
+#             - /bin/sh
+#             - -c
+#             - |
+#               kubectl rollout restart deployment argocd-repo-server -n argocd
+#               kubectl rollout restart deployment argocd-application-controller -n argocd

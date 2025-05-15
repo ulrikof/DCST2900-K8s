@@ -1,0 +1,11 @@
+{{- if .Values.dedicatedNode }}
+apiVersion: v1
+kind: Node
+metadata:
+  name: {{ .Values.dedicatedNode }}
+spec:
+  taints:
+    - effect: NoSchedule
+      key: dedicated
+      value: {{ .Values.name }}
+{{- end }}

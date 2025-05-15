@@ -1,0 +1,12 @@
+# Must be added to at least worker.yaml, unsure if needed in control-plane.yaml (propably not but does not hurt)
+
+machine:
+  kubelet:
+    extraMounts:
+      - destination: /var/lib/longhorn
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
