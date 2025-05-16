@@ -8,7 +8,7 @@
 # spec:
 #   project: default
 #   source:
-#     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+#     repoURL: https://github.com/ulrikof/DCST2900-K8s.git
 #     targetRevision: main
 #     path: ArgoCD/charts/k8s-in-k8s-with-taint
 #     helm:
