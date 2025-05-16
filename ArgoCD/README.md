@@ -78,3 +78,26 @@ You can also deploy instances of Helm Charts, which serve as reusable manifest t
 Examples of both direct manifest deployments and Helm Chart-based deployments can be found in `ArgoCD/apps/application-examples`.
 
 Under `ArgoCD/apps/orgs`, there exists an example of how to deploy an entire tenant. There are two apps by defualt, each specifying a seperate tenant but with the same content. The org-apps create a virtual cluster along with other testing resources as well as setting up users and such.
+
+### Notes on Using Virtual Clusters
+
+To deploy a virtual cluster, see the example shown in `ArgoCD/apps/application-examples/k8s-in-k8s.yaml`. Most of the variables specified in this file have default values and do not need to be set.
+
+After a virtual cluster is deployed, SSH into the Ubuntu manager machine. Note that `kubectl` is automatically installed on this machine. To get cluster access with `kubectl`, run the following commands to retrieve the kubeconfig:
+
+```sh
+mkdir ~/.kube
+curl -o ~/.kube/config talos-config/kubeconfig
+```
+
+The virtual cluster should now be accessible and usable like a regular Kubernetes cluster.
+
+Although the virtual cluster includes an app-of-apps referencing this Git repository by default, this is only used to configure the virtual cluster in the same manner as the physical cluster. If you want to deploy additional applications using Argo CD, simply add another repository reference in the app-of-apps resource.
+
+## Functionality Not Yet Implemented in Argo CD
+
+The folder `ArgoCD/not-integrated` contains resources that have not yet been implemented in Argo CD but are close. This folder follows the same structure as the main `ArgoCD` folder, but Argo CD does not use it for deployment.
+
+This directory includes:
+- An application for installing Canal (due to integration issues).
+- Resources for installing and using Crossplane (due to issues deploying it through Argo CD).
