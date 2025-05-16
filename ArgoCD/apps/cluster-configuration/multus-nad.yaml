@@ -1,26 +1,25 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: crossplane-azure-deployment
+  name: multus-nad
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-  annotations:
-    argocd.argoproj.io/sync-wave: "10"
-    argocd.argoproj.io/hook: PostSync
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   project: default
   source:
-    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    repoURL: https://github.com/ulrikof/DCST2900-K8s.git
     targetRevision: main
-    path: ArgoCD/deployments/azure
+    path: ArgoCD/deployments/cluster-configuration/multus
   destination:
     server: https://kubernetes.default.svc
-    namespace: crossplane-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - PruneLast=true
+
+# move to addons at some point
+# NO it should not becouse we do not want v-clusters to get this! 

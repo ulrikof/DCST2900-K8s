@@ -1,20 +1,20 @@
-# # The ArgoCD Application for all Crossplane Community contribution Providers needed in the setup
+# # The ArgoCD Application for the Crossplane ArgoCD providers ProviderConfig
 # ---
 # apiVersion: argoproj.io/v1alpha1
 # kind: Application
 # metadata:
-#   name: crossplane-provider-argocd
+#   name: crossplane-provider-argocd-config
 #   namespace: argocd
 #   finalizers:
 #     - resources-finalizer.argocd.argoproj.io
 #   annotations:
-#     argocd.argoproj.io/sync-wave: "4"
+#     argocd.argoproj.io/sync-wave: "5"
 # spec:
 #   project: default
 #   source:
-#     repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+#     repoURL: https://github.com/ulrikof/DCST2900-K8s.git
 #     targetRevision: main
-#     path: ArgoCD/deployments/crossplane-contrib/provider-argocd/provider
+#     path: ArgoCD/deployments/crossplane-contrib/provider-argocd/config
 #   destination:
 #     namespace: default
 #     server: https://kubernetes.default.svc

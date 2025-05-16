@@ -1,31 +1,33 @@
-# The ArgoCD Application for crossplane core components
+# The ArgoCD Application for the Azure providers ProviderConfig
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: crossplane-backbone
+  name: crossplane-provider-azure-config
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   project: default
   source:
-    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    repoURL: https://github.com/ulrikof/DCST2900-K8s.git
     targetRevision: main
-    path: ArgoCD/charts/crossplane # Path to the crossplane Chart.yaml
+    path: ArgoCD/deployments/upbound/provider-azure/config
   destination:
+    namespace: default
     server: https://kubernetes.default.svc
-    namespace: crossplane-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
     retry:
-      limit: 1
+      limit: 5
       backoff:
         duration: 5s 
         factor: 2 

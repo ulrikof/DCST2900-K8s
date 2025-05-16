@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: busybox
+  name: metallb-config
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    repoURL: https://github.com/ulrikof/DCST2900-K8s.git
     targetRevision: main
-    path: ArgoCD/charts/busybox
+    path: ArgoCD/deployments/cluster-configuration/metalLb
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

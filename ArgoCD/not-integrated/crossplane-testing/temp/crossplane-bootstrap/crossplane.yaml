@@ -1,23 +1,23 @@
-# The ArgoCD Application for external-secrets-operator
+# The ArgoCD Application for crossplane core components
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: external-secrets-operator
+  name: crossplane-backbone
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   project: default
   source:
-    repoURL: git@github.com:ulrikof/DCST2900-K8s.git
+    repoURL: https://github.com/ulrikof/DCST2900-K8s.git
     targetRevision: main
-    path: ArgoCD/deployments/external-secrets/install
+    path: ArgoCD/charts/crossplane # Path to the crossplane Chart.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: external-secrets
+    namespace: crossplane-system
   syncPolicy:
     automated:
       prune: true
