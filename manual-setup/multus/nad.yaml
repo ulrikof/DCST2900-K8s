@@ -8,11 +8,5 @@ spec:
     "cniVersion": "0.3.1",
     "type": "bridge",
     "bridge": "br0",
-    "ipam": {
-      "type": "host-local",
-      "subnet": "10.100.38.0/23",
-      "rangeStart": "10.100.38.200",
-      "rangeEnd": "10.100.38.250",
-      "gateway": "10.100.38.1"
-    }
+    "ipam": {}
   }'

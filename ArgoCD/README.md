@@ -98,7 +98,10 @@ curl -o ~/.kube/config http://talos-config/kubeconfig
 
 The virtual cluster should now be accessible and usable like a regular Kubernetes cluster.
 
-Although the virtual cluster includes an app-of-apps referencing this Git repository by default, this is only used to configure the virtual cluster in the same way as the physical cluster. To deploy additional applications using Argo CD, simply add another repository reference in the app-of-apps resource.
+Although the virtual cluster includes an app-of-apps referencing this Git repository by default, this is only used to configure the virtual cluster in the same way as the physical cluster. As a result, all the add-ons used in the physical cluster are also installed in the virtual clusters, making the virtual and physical clusters work in the same manner. To deploy additional applications using Argo CD, simply add another repository reference to the app-of-apps resource.
+
+Additionally, although Multus and MetalLB are installed in each virtual cluster, they are not automatically configured to work within them. This is because the manifests responsible for this configuration specify network ranges and configurations, which cannot overlap with each other. Therefore, the files under `ArgoCD/deployments/cluster-configuration` must be manually created and customized to ensure that the specified ranges do not conflict with those used by other clusters. By default, the Multus configuration specifies that the bridge interface has no IP assignment, and therefore relies on the physical DHCP server. However, this behavior can be customized if needed.
+
 
 ## Functionality Not Yet Implemented in Argo CD
 
