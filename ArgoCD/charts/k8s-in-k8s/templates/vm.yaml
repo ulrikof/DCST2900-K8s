@@ -65,5 +65,6 @@ spec:
                 - [ sh, -c, "curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" ]
                 - [ sh, -c, "install -m 555 argocd-linux-amd64 /usr/local/bin/argocd" ]
                 - [ sh, -c, "rm argocd-linux-amd64" ]
-                - [ sh, -c, "sudo -u ubuntu mkdir -p /home/ubuntu/.kube" ]
-                - [ sh, -c, "sudo -u ubuntu curl -o /home/ubuntu/.kube/config http://talos-config/kubeconfig" ]
+                - [ sh, -c, "sleep 20" ]
+                - [ sh, -c, "mkdir -p /home/ubuntu/.kube" ]
+                - [ sh, -c, "curl -o /home/ubuntu/.kube/config http://talos-config/kubeconfig" ]
