@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/ulrikof/DCST2900-K8s.git
-    targetRevision: correct-virtual-clusters-to-work-with-public-repo
+    targetRevision: main
     path: ArgoCD/charts/k8s-in-k8s
     helm:
       values: |
