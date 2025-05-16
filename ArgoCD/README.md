@@ -25,10 +25,6 @@ Wait until all Argo CD resources have been deployed. All Argo CD pods should be 
 kubectl get all -n argocd
 ```
 
-## Configure Argo CD
-
-*(Note: If the repository is private, add authentication steps here. This section can be skipped for public repositories.)*
-
 ## Apply App-of-Apps
 
 To enable Argo CD to install the cluster design, you need to manually create an Application that points to the `ArgoCD/apps` folder. This is done by applying the `ArgoCD/app-of-apps.yaml` manifest to the cluster:
@@ -70,3 +66,15 @@ You can now use the Argo CLI to inspect and manage your applications. For exampl
 argocd app get app-of-apps
 argocd app sync app-of-apps
 ```
+
+## Using Argo CD to Deploy Manifests
+
+All add-ons are installed under the `ArgoCD/apps/addons` directory. Any new add-ons should be placed here, as the virtual clusters reference this folder to install only the add-ons. 
+
+To deploy a manifest using Argo CD, create a folder containing the manifest inside the `ArgoCD/deployments` directory. Then, define an Argo CD application in the `ArgoCD/apps` directory that points to this folder. Argo CD will then automatically synchronize the application and deploy the manifest.
+
+You can also deploy instances of Helm Charts, which serve as reusable manifest templates. These charts are located in the `ArgoCD/charts` directory, and only require an application that references them.
+
+Examples of both direct manifest deployments and Helm Chart-based deployments can be found in `ArgoCD/apps/application-examples`.
+
+Under `ArgoCD/apps/orgs`, there exists an example of how to deploy an entire tenant. There are two apps by defualt, each specifying a seperate tenant but with the same content. The org-apps create a virtual cluster along with other testing resources as well as setting up users and such.
