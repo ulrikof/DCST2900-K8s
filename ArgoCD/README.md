@@ -81,18 +81,24 @@ Under `ArgoCD/apps/orgs`, there exists an example of how to deploy an entire ten
 
 ### Notes on Using Virtual Clusters
 
-To deploy a virtual cluster, see the example shown in `ArgoCD/apps/application-examples/k8s-in-k8s.yaml`. Most of the variables specified in this file have default values and do not need to be set.
+To deploy a virtual cluster, refer to the example in `ArgoCD/apps/application-examples/k8s-in-k8s.yaml`. Most variables in this file have default values and typically do not need to be modified.
 
-After a virtual cluster is deployed, SSH into the Ubuntu manager machine. Note that `kubectl` is automatically installed on this machine. To get cluster access with `kubectl`, run the following commands to retrieve the kubeconfig:
+Once the virtual cluster is deployed, you can SSH into the Ubuntu manager machine. The `kubectl` CLI and `kubeconfig` is automatically installed, fetched and setup on this machine. This means that, by default, full access to the virtual cluster should be available without any manual internvention.
+
+However, in some cases, the automatic setup may fail. If that happens, you can configure access manually by running the following commands:
 
 ```sh
-mkdir ~/.kube
-curl -o ~/.kube/config talos-config/kubeconfig
+# Install kubectl
+sudo snap install kubectl --classic
+
+# Fetch kubeconfig and place it in the correct folder
+mkdir -p ~/.kube
+curl -o ~/.kube/config http://talos-config/kubeconfig
 ```
 
 The virtual cluster should now be accessible and usable like a regular Kubernetes cluster.
 
-Although the virtual cluster includes an app-of-apps referencing this Git repository by default, this is only used to configure the virtual cluster in the same manner as the physical cluster. If you want to deploy additional applications using Argo CD, simply add another repository reference in the app-of-apps resource.
+Although the virtual cluster includes an app-of-apps referencing this Git repository by default, this is only used to configure the virtual cluster in the same way as the physical cluster. To deploy additional applications using Argo CD, simply add another repository reference in the app-of-apps resource.
 
 ## Functionality Not Yet Implemented in Argo CD
 
