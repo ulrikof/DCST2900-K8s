@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/ulrikof/DCST2900-K8s.git
-    targetRevision: main
+    targetRevision: correct-multus-nad
     path: ArgoCD/deployments/cluster-configuration/multus
   destination:
     server: https://kubernetes.default.svc
