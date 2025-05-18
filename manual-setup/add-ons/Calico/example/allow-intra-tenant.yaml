@@ -1,0 +1,27 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: allow-intra-namespace
+  namespace: tenant-a
+spec:
+  selector: all()
+  types:
+  - Ingress
+  ingress:
+  - action: Allow
+    source:
+      namespaceSelector: tenant == 'tenant-a'
+---
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: allow-intra-namespace
+  namespace: tenant-b
+spec:
+  selector: all()
+  types:
+  - Ingress
+  ingress:
+  - action: Allow
+    source:
+      namespaceSelector: tenant == 'tenant-b'

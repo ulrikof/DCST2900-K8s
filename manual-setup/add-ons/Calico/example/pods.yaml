@@ -1,0 +1,54 @@
+# Tenant A
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-a1
+  namespace: tenant-a
+  labels:
+    app: test
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command: ["sleep", "3600"]
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-a2
+  namespace: tenant-a
+  labels:
+    app: test
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command: ["sleep", "3600"]
+
+# Tenant B
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-b1
+  namespace: tenant-b
+  labels:
+    app: test
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command: ["sleep", "3600"]
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-b2
+  namespace: tenant-b
+  labels:
+    app: test
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command: ["sleep", "3600"]

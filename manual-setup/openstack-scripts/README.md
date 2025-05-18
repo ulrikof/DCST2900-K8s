@@ -1,0 +1,3 @@
+This folder contains scripts for the automated creation and setup of the solution in an OpenStack environment. This can be used to rapidly create and delete iterations of the design in OpenStack, which is much faster than what is possible on physical hardware. This is therefore suited for rapid development.
+
+Note that not all functionality is fully supported in OpenStack due to limitations such as restrictions on the number of IP addresses allowed per network interface.

@@ -42,13 +42,17 @@ To deploy the actual cluster design, there are two available options: automatic 
 
 The design is intended to be deployed using Argo CD. This only requires manually installing Argo CD and then deploying an app-of-apps configuration that references this Git repository. [See the README in the ArgoCD folder for detailed steps](ArgoCD/README.md).
 
+It should be noted that not all functionality is currently integrated with Argo CD. Calico has issues that must be resolved before it can be fully implemented, and due to time constraints, Crossplane has not yet been integrated. However, significant progress was made toward integrating Crossplane, and the implementation is nearly complete.
+
 ### Manual Deployment
 
 Although the design is intended to be deployed using Argo CD, it can also be installed manually. This can help provide a clearer understanding of the individual add-ons and how they work together.
 
-To do this, refer to the `manual-setup` folder. Each subfolder corresponds to one of the add-ons used in the design. Inside each subfolder, there is an `install.sh` file that explains how to install and configure the add-on, including all required commands.
+To do this, refer to the `manual-setup/add-ons` folder. Each subfolder corresponds to one of the add-ons used in the design. Inside each subfolder, there is often an `install.sh` file that explains how to install and configure the add-on, including all required commands.
 
 Note that although these are `.sh` files, they are not intended to be executed as standalone scripts, but rather serve as a guided walkthrough.
+
+The `manual-setup` folder also contains example resources for deployment, scripts for RBAC and IAM configuration, and OpenStack-specific scripts for managing clusters in an OpenStack environment.
 
 ## Use Case Testing
 
